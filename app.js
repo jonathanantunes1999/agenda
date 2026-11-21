@@ -13,21 +13,21 @@ const CONFIG = {
     ["Set", "setembro"], ["Out", "outubro"], ["Nov", "novembro"], ["Dez", "dezembro"],
   ],
   colors: [
-    { id: "tinta",   label: "Tinta",   hex: "#1B1B1F" },
-    { id: "tomate",  label: "Tomate",  hex: "#E2482B" },
-    { id: "cobalto", label: "Cobalto", hex: "#2342C4" },
-    { id: "salvia",  label: "Sálvia",  hex: "#93A88E" },
-    { id: "areia",   label: "Areia",   hex: "#D8C8A6" },
-    { id: "lilas",   label: "Lilás",   hex: "#B9A8DB" },
+    { id: "tinta",  label: "Tinta",  hex: "#231A2B" },
+    { id: "cereja", label: "Cereja", hex: "#C2185B" },
+    { id: "rosa",   label: "Rosa",   hex: "#F6B3C6" },
+    { id: "lilas",  label: "Lilás",  hex: "#C3B1E8" },
+    { id: "salvia", label: "Sálvia", hex: "#A5BFA0" },
+    { id: "areia",  label: "Areia",  hex: "#EAD9BE" },
   ],
   modules: [
-    { id: "mensal",   label: "Vista mensal",     tab: "MÊS", price: 6,  color: "#E2482B", desc: "Um mês em duas páginas, para ver o quadro geral." },
-    { id: "semanal",  label: "Semanal",          tab: "SEM", price: 9,  color: "#F2B134", desc: "Sete dias por dupla de páginas, com espaço para escrever." },
-    { id: "diario",   label: "Diário",           tab: "DIA", price: 14, color: "#2342C4", desc: "Uma página por dia, para quem escreve muito." },
-    { id: "notas",    label: "Notas pontilhadas", tab: "NOT", price: 4,  color: "#93A88E", desc: "Folhas pontilhadas livres para listas, esboços e ideias." },
-    { id: "habitos",  label: "Tracker de hábitos", tab: "HÁB", price: 4, color: "#B9A8DB", desc: "Grelha mensal para marcar o que repetes todos os dias." },
-    { id: "financas", label: "Finanças",         tab: "FIN", price: 4,  color: "#1B1B1F", desc: "Registo de despesas e orçamento mês a mês." },
-    { id: "leituras", label: "Leituras",         tab: "LEI", price: 3,  color: "#D8C8A6", desc: "Lista do que lês, com espaço para notas." },
+    { id: "mensal",   label: "Vista mensal",     tab: "MÊS", price: 6,  color: "#F4719A", desc: "Um mês em duas páginas, para ver o quadro geral." },
+    { id: "semanal",  label: "Semanal",          tab: "SEM", price: 9,  color: "#FFD166", desc: "Sete dias por dupla de páginas, com espaço para escrever." },
+    { id: "diario",   label: "Diário",           tab: "DIA", price: 14, color: "#6F4BD8", desc: "Uma página por dia, para quem escreve muito." },
+    { id: "notas",    label: "Notas pontilhadas", tab: "NOT", price: 4,  color: "#9CC5A1", desc: "Folhas pontilhadas livres para listas, esboços e ideias." },
+    { id: "habitos",  label: "Tracker de hábitos", tab: "HÁB", price: 4, color: "#C3B1E8", desc: "Grelha mensal para marcar o que repetes todos os dias." },
+    { id: "financas", label: "Finanças",         tab: "FIN", price: 4,  color: "#2A1830", desc: "Registo de despesas e orçamento mês a mês." },
+    { id: "leituras", label: "Leituras",         tab: "LEI", price: 3,  color: "#F6B3C6", desc: "Lista do que lês, com espaço para notas." },
   ],
   finishes: [
     { id: "separadores", label: "Separadores impressos", price: 3, desc: "Folhas de separação com o nome de cada módulo." },
@@ -53,7 +53,7 @@ const reduceMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matche
 const byId = (list, id) => list.find((x) => x.id === id);
 const clone = (o) => JSON.parse(JSON.stringify(o));
 
-const INK = "#141416", PAPER = "#F3F3F0";
+const INK = "#2A1830", PAPER = "#FFF5F2";
 const rgb = (hex) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
 const lum = (hex) => {
   const [r, g, b] = rgb(hex).map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; });
@@ -452,9 +452,9 @@ function fillConfigValues() {
 /* ---------- Hero: a agenda monta-se sozinha; as cores deixam experimentar ---------- */
 function startHero() {
   const frames = [
-    { color: "tinta",   name: "",        modules: ["mensal", "semanal", "notas"] },
-    { color: "tomate",  name: "Marta",   modules: ["mensal", "semanal", "notas", "habitos"] },
-    { color: "cobalto", name: "",        modules: ["mensal", "diario", "financas", "notas"] },
+    { color: "rosa",    name: "",        modules: ["mensal", "semanal", "notas"] },
+    { color: "cereja",  name: "Marta",   modules: ["mensal", "semanal", "notas", "habitos"] },
+    { color: "tinta",   name: "",        modules: ["mensal", "diario", "financas", "notas"] },
     { color: "salvia",  name: "Atelier", modules: ["mensal", "semanal", "leituras"] },
     { color: "lilas",   name: "",        modules: CONFIG.modules.map((m) => m.id) },
   ];

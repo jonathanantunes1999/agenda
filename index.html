@@ -5,14 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ARGO — agendas que se montam</title>
   <meta name="description" content="Agendas A5 de capa dura com 6 argolas. Escolhes a capa, juntas os módulos e, para o ano, trocas só o miolo.">
-  <meta name="theme-color" content="#F3F3F0">
+  <meta name="theme-color" content="#FFF5F2">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Fraunces:ital,opsz,wght,SOFT@0,9..144,600..800,100;1,9..144,600..800,100&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="sparkle" viewBox="0 0 24 24"><path d="M12 1c.9 7 3.6 10 11 11-7.4 1-10.1 4-11 11-.9-7-3.6-10-11-11 7.4-1 10.1-4 11-11z"/></symbol>
+  </svg>
   <a class="skip" href="#main">Saltar para o conteúdo</a>
 
   <!-- 1. NAV -->
@@ -48,14 +51,18 @@
       <div class="hero__stage">
       <div class="hero__art">
         <div class="hero__disc" aria-hidden="true"></div>
+        <svg class="spark" style="--s:34px;top:6%;left:5%" aria-hidden="true"><use href="#sparkle"/></svg>
+        <svg class="spark" style="--s:22px;top:40%;right:3%;animation-delay:-1s" aria-hidden="true"><use href="#sparkle"/></svg>
+        <svg class="spark" style="--s:28px;bottom:12%;left:1%;animation-delay:-2s" aria-hidden="true"><use href="#sparkle"/></svg>
         <div id="agenda-hero" class="agenda-host hero__agenda" aria-hidden="true"></div>
         <svg class="sticker" viewBox="0 0 160 160" role="img" aria-label="Monta a tua, feita por ti">
           <defs><path id="sticker-path" d="M80,80 m-56,0 a56,56 0 1,1 112,0 a56,56 0 1,1 -112,0"/></defs>
-          <circle cx="80" cy="80" r="78" fill="#E2482B"/>
+          <circle cx="80" cy="80" r="78" fill="#F4719A"/>
           <text><textPath href="#sticker-path" textLength="346" lengthAdjust="spacing">MONTA A TUA • FEITA POR TI •</textPath></text>
-          <rect x="68" y="58" width="24" height="44" rx="12" fill="none" stroke="#141416" stroke-width="5"/>
+          <rect x="68" y="58" width="24" height="44" rx="12" fill="none" stroke="#2A1830" stroke-width="5"/>
         </svg>
       </div>
+      <p class="hand">experimenta uma cor <svg viewBox="0 0 44 38" aria-hidden="true"><path d="M4 3C4 20 14 28 34 28M27 21l8 7-8 6"/></svg></p>
       <div class="hero__swatches" id="hero-swatches" role="group" aria-label="Experimenta uma cor de capa"></div>
       </div>
     </section>
@@ -76,7 +83,7 @@
     <section class="section wrap" id="como-funciona">
       <div class="section-head">
         <p class="kicker">Como funciona</p>
-        <h2>Escolhe. Junta. Recebe.</h2>
+        <h2>Escolhe. Junta. <em>Recebe.</em></h2>
       </div>
       <ol class="steps">
         <li class="sheet"><span class="num">01</span><h3>Escolhe a capa</h3><p>Seis cores de capa dura A5 e, se quiseres, o teu nome gravado em baixo.</p></li>
@@ -89,7 +96,7 @@
     <section class="section wrap builder" id="construir">
       <div class="section-head">
         <p class="kicker">Construtor</p>
-        <h2>Monta a tua, peça a peça.</h2>
+        <h2>Monta a tua, <em>peça a peça</em>.</h2>
       </div>
 
       <div class="builder__grid" id="builder">
@@ -216,7 +223,7 @@
     <section class="section wrap" id="conjuntos">
       <div class="section-head">
         <p class="kicker">Conjuntos prontos</p>
-        <h2>Para quem não quer decidir tudo.</h2>
+        <h2>Para quem não quer <em>decidir tudo</em>.</h2>
         <p class="lead lead--sm">Três pontos de partida. Depois ajustas o que quiseres no construtor.</p>
       </div>
       <div class="sets" id="sets"></div>
@@ -227,9 +234,9 @@
       <div class="wrap refill__in">
         <div>
           <p class="kicker">Recargas</p>
-          <h2>Para o ano, trocas só o miolo.</h2>
+          <h2>Para o ano, trocas <em>só o miolo</em>.</h2>
           <p class="lead">As argolas abrem. No fim do ano tiras o miolo usado, pões o novo e a capa dura continua contigo, anos a fio.</p>
-          <button type="button" class="btn btn--tomate" data-action="recarga">Montar recarga</button>
+          <button type="button" class="btn btn--accent" data-action="recarga">Montar recarga</button>
         </div>
         <div class="swap" aria-label="Exemplo de recarga">
           <p class="swap__row"><span class="tag tag--old">Miolo <span data-year>2027</span></span><span class="swap__arrow" aria-hidden="true"></span><span class="tag tag--new">Miolo <span data-year-next>2028</span></span></p>
@@ -244,7 +251,7 @@
     <section class="section wrap" id="perguntas">
       <div class="section-head">
         <p class="kicker">Perguntas</p>
-        <h2>Perguntas frequentes.</h2>
+        <h2>Perguntas <em>frequentes</em>.</h2>
       </div>
       <div class="faq">
         <details>
