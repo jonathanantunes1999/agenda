@@ -67,7 +67,7 @@ const isDark = (hex) => lum(hex) < 0.12;
 /* ==========================================================================
    Estado, preço e persistência
    ========================================================================== */
-const STORE_KEY = "argo-builder-v1";
+const STORE_KEY = "bicabica-builder-v1";
 let state = load();
 
 function sanitize(p) {
@@ -197,7 +197,7 @@ function buildOrderText(s, c) {
   const color = byId(CONFIG.colors, s.color);
   const rows = q.lines.map((l) => `  ${l.label.padEnd(36, ".")} ${money(l.price)}`);
   return [
-    `PEDIDO ARGO · ${new Date().toLocaleString("pt-PT")}`,
+    `PEDIDO BICA A BICA · ${new Date().toLocaleString("pt-PT")}`,
     "=".repeat(48),
     refill ? "TIPO:   Só recarga (miolo A5 para 6 argolas, sem capa)" : "TIPO:   Agenda completa (capa dura A5, 6 argolas)",
     ...(refill ? [] : [`CAPA:   ${color.label} (${color.hex})`, `NOME:   ${s.name.trim() ? s.name.trim().toLocaleUpperCase("pt-PT") : "(sem gravação)"}`]),
@@ -232,7 +232,7 @@ function buildOrderText(s, c) {
  */
 async function submitOrder(order) {
   await new Promise((resolve) => setTimeout(resolve, 700));
-  console.info("[ARGO demo] Pedido simulado:\n" + order.text);
+  console.info("[Bica a Bica demo] Pedido simulado:\n" + order.text);
 }
 
 /* ==========================================================================
