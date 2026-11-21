@@ -449,9 +449,38 @@ function fillConfigValues() {
   $$("[data-year-next]").forEach((n) => (n.textContent = CONFIG.year + 1));
 }
 
+/* ---------- Hero: a agenda monta-se sozinha; as cores deixam experimentar ---------- */
+function startHero() {
+  const frames = [
+    { color: "tinta",   name: "",        modules: ["mensal", "semanal", "notas"] },
+    { color: "tomate",  name: "Marta",   modules: ["mensal", "semanal", "notas", "habitos"] },
+    { color: "cobalto", name: "",        modules: ["mensal", "diario", "financas", "notas"] },
+    { color: "salvia",  name: "Atelier", modules: ["mensal", "semanal", "leituras"] },
+    { color: "lilas",   name: "",        modules: CONFIG.modules.map((m) => m.id) },
+  ];
+  let view = { ...clone(CONFIG.base), ...frames[0] };
+  const box = $("#hero-swatches");
+  box.innerHTML = CONFIG.colors.map((c) => `<button type="button" class="dot" data-color="${c.id}" aria-label="Capa ${c.label}" aria-pressed="false" style="--c:${c.hex}"></button>`).join("");
+  const show = (patch) => {
+    view = { ...view, ...patch };
+    heroAgenda.update(view);
+    $$(".dot", box).forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.color === view.color)));
+  };
+
+  let i = 0, timer = null;
+  box.addEventListener("click", (e) => {
+    const b = e.target.closest(".dot");
+    if (!b) return;
+    clearInterval(timer);
+    show({ color: b.dataset.color });
+  });
+  show(frames[0]);
+  if (!reduceMotion()) timer = setInterval(() => { i = (i + 1) % frames.length; show(frames[i]); }, 2600);
+}
+
 buildControls();
 fillConfigValues();
-heroAgenda.update(clone(CONFIG.base));
 render();
+startHero();
 // As fontes chegam depois: voltar a medir o nome gravado.
 document.fonts?.ready.then(render);
