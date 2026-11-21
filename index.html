@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ARGO — agendas que se montam</title>
+  <meta name="description" content="Agendas A5 de capa dura com 6 argolas. Escolhes a capa, juntas os módulos e, para o ano, trocas só o miolo.">
+  <meta name="theme-color" content="#F3F3F0">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Saltar para o conteúdo</a>
+
+  <!-- 1. NAV -->
+  <header class="nav">
+    <div class="wrap nav__in">
+      <a class="logo" href="#top" aria-label="ARGO, início">ARG<span class="logo__o" aria-hidden="true"></span></a>
+      <nav id="nav-links" class="nav__links" aria-label="Principal">
+        <a href="#construir">Construir</a>
+        <a href="#conjuntos">Conjuntos</a>
+        <a href="#recargas">Recargas</a>
+        <a href="#perguntas">Perguntas</a>
+      </nav>
+      <button class="btn btn--line nav__toggle" type="button" aria-expanded="false" aria-controls="nav-links">Menu</button>
+      <a class="btn btn--ink nav__cta" href="#construir">Montar a minha</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <noscript><p class="wrap noscript">Esta demo precisa de JavaScript para o construtor funcionar.</p></noscript>
+
+    <!-- 2. HERO -->
+    <section class="hero wrap" id="top">
+      <div class="hero__copy">
+        <p class="kicker">Agenda A5 · capa dura · 6 argolas</p>
+        <h1>A agenda que tu <mark>montas</mark>.</h1>
+        <p class="lead">Capa dura A5, seis argolas e um miolo que trocas todos os anos. Escolhes a capa, juntas os módulos que usas e ficas só com o que interessa.</p>
+        <div class="cta-row">
+          <a class="btn btn--ink" href="#construir">Montar a minha</a>
+          <button class="btn btn--line" type="button" data-action="base">Encomendar o modelo base</button>
+        </div>
+        <p class="fine">Modelo base: <strong data-price="base">43 €</strong> · capa Tinta, mensal, semanal e notas. Preços de exemplo nesta demo.</p>
+      </div>
+      <div class="hero__art">
+        <div class="hero__disc" aria-hidden="true"></div>
+        <div id="agenda-hero" class="agenda-host hero__agenda" aria-hidden="true"></div>
+        <svg class="sticker" viewBox="0 0 160 160" role="img" aria-label="Monta a tua, feita por ti">
+          <defs><path id="sticker-path" d="M80,80 m-56,0 a56,56 0 1,1 112,0 a56,56 0 1,1 -112,0"/></defs>
+          <circle cx="80" cy="80" r="78" fill="#E2482B"/>
+          <text><textPath href="#sticker-path" textLength="346" lengthAdjust="spacing">MONTA A TUA • FEITA POR TI •</textPath></text>
+          <rect x="68" y="58" width="24" height="44" rx="12" fill="none" stroke="#141416" stroke-width="5"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 3. MARQUEE -->
+    <section class="marquee" aria-label="Módulos disponíveis">
+      <div class="marquee__track">
+        <ul>
+          <li>Mensal</li><li>Semanal</li><li>Diário</li><li>Notas</li><li>Hábitos</li><li>Finanças</li><li>Leituras</li>
+        </ul>
+        <ul aria-hidden="true">
+          <li>Mensal</li><li>Semanal</li><li>Diário</li><li>Notas</li><li>Hábitos</li><li>Finanças</li><li>Leituras</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 4. COMO FUNCIONA -->
+    <section class="section wrap" id="como-funciona">
+      <div class="section-head">
+        <p class="kicker">Como funciona</p>
+        <h2>Três passos e está montada.</h2>
+      </div>
+      <ol class="steps">
+        <li class="sheet"><span class="num">01</span><h3>Escolhe a capa</h3><p>Seis cores de capa dura A5 e, se quiseres, o teu nome gravado em baixo.</p></li>
+        <li class="sheet"><span class="num">02</span><h3>Junta os módulos</h3><p>Mensal, semanal, diário, notas, hábitos, finanças, leituras. Levas só o que vais usar.</p></li>
+        <li class="sheet"><span class="num">03</span><h3>Recebe montada</h3><p>Montamos tudo nas argolas e enviamos por CTT. Pagas por MB Way ou transferência depois do pedido.</p></li>
+      </ol>
+    </section>
+
+    <!-- 5. CONSTRUTOR -->
+    <section class="section wrap builder" id="construir">
+      <div class="section-head">
+        <p class="kicker">Construtor</p>
+        <h2>Monta a tua, peça a peça.</h2>
+      </div>
+
+      <div class="builder__grid" id="builder">
+        <aside class="preview" aria-label="Pré-visualização da agenda">
+          <div class="preview__stage"><div id="agenda-preview" class="agenda-host" aria-hidden="true"></div></div>
+          <div class="preview__info">
+            <p class="spec" id="preview-spec">Tinta · A5 · 6 argolas</p>
+            <p class="period" id="preview-period">12 meses · Jan 2027 a Dez 2027</p>
+            <p class="total" aria-live="polite" aria-atomic="true"><span>Total</span><strong id="preview-total">43 €</strong></p>
+          </div>
+        </aside>
+
+        <!-- Passos -->
+        <div class="panel" id="panel-steps">
+          <div class="mode" role="group" aria-label="Tipo de pedido">
+            <button type="button" class="mode__btn" data-mode="agenda" aria-pressed="true">Agenda completa</button>
+            <button type="button" class="mode__btn" data-mode="recarga" aria-pressed="false">Só recarga</button>
+          </div>
+
+          <div class="steps-list">
+            <section class="step" id="step-cover" aria-labelledby="h-cover">
+              <h3 id="h-cover">Capa</h3>
+              <div class="swatches" id="colors" role="radiogroup" aria-label="Cor da capa"></div>
+              <div class="field">
+                <label for="engrave">Nome na capa <span class="hint">opcional · máx. 18 caracteres · +<span data-price="engrave">4 €</span></span></label>
+                <input id="engrave" type="text" maxlength="18" autocomplete="off" placeholder="Ex.: Marta">
+              </div>
+            </section>
+
+            <section class="step" aria-labelledby="h-start">
+              <h3 id="h-start">Começa em</h3>
+              <p class="help">O miolo tem 12 meses e podes começar em qualquer um, não só em janeiro. Ano de início: <span data-year>2027</span>.</p>
+              <div class="months" id="months" role="radiogroup" aria-label="Mês de início"></div>
+            </section>
+
+            <section class="step" aria-labelledby="h-mods">
+              <h3 id="h-mods">Módulos</h3>
+              <p class="help">Escolhe quantos quiseres. Cada um aparece como separador na agenda.</p>
+              <div class="opts" id="modules"></div>
+            </section>
+
+            <section class="step" aria-labelledby="h-fin">
+              <h3 id="h-fin">Acabamentos</h3>
+              <div class="opts" id="finishes"></div>
+            </section>
+          </div>
+
+          <section class="summary" aria-labelledby="h-sum">
+            <h3 id="h-sum">Resumo</h3>
+            <ul class="lines" id="summary-lines"></ul>
+            <p class="sum-total"><span>Total</span><strong id="summary-total">43 €</strong></p>
+            <button type="button" class="btn btn--ink btn--block" id="btn-continue" aria-describedby="continue-hint">Continuar para encomenda</button>
+            <p class="hint" id="continue-hint" hidden>Escolhe pelo menos um módulo para continuar.</p>
+            <p class="fine">Preços de exemplo nesta demo.</p>
+          </section>
+        </div>
+
+        <!-- Encomenda -->
+        <div class="panel" id="panel-order" hidden>
+          <h3 class="panel__title" id="h-order" tabindex="-1">Quase lá. Os teus dados.</h3>
+          <div class="order-sum">
+            <p class="order-sum__title">O teu pedido</p>
+            <ul class="lines" id="order-lines"></ul>
+            <p class="sum-total"><span>Total</span><strong id="order-total">43 €</strong></p>
+          </div>
+
+          <form id="order-form" novalidate>
+            <p class="err-summary" id="form-errors" role="alert" hidden></p>
+            <div class="form-grid">
+              <div class="field">
+                <label for="f-nome">Nome</label>
+                <input id="f-nome" name="nome" type="text" autocomplete="name" aria-describedby="e-nome" required>
+                <p class="err" id="e-nome"></p>
+              </div>
+              <div class="field">
+                <label for="f-email">Email</label>
+                <input id="f-email" name="email" type="email" autocomplete="email" aria-describedby="e-email" required>
+                <p class="err" id="e-email"></p>
+              </div>
+              <div class="field">
+                <label for="f-telemovel">Telemóvel</label>
+                <input id="f-telemovel" name="telemovel" type="tel" autocomplete="tel" inputmode="tel" aria-describedby="e-telemovel" required>
+                <p class="err" id="e-telemovel"></p>
+              </div>
+              <div class="field">
+                <label for="f-codpostal">Código postal</label>
+                <input id="f-codpostal" name="codpostal" type="text" autocomplete="postal-code" inputmode="numeric" placeholder="0000-000" aria-describedby="e-codpostal" required>
+                <p class="err" id="e-codpostal"></p>
+              </div>
+              <div class="field field--wide">
+                <label for="f-morada">Morada</label>
+                <input id="f-morada" name="morada" type="text" autocomplete="street-address" aria-describedby="e-morada" required>
+                <p class="err" id="e-morada"></p>
+              </div>
+              <div class="field field--wide">
+                <label for="f-localidade">Localidade</label>
+                <input id="f-localidade" name="localidade" type="text" autocomplete="address-level2" aria-describedby="e-localidade" required>
+                <p class="err" id="e-localidade"></p>
+              </div>
+              <div class="field field--wide">
+                <label for="f-notas">Notas <span class="hint">opcional</span></label>
+                <textarea id="f-notas" name="notas" rows="3"></textarea>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn btn--line" id="btn-back">Voltar a editar</button>
+              <button type="submit" class="btn btn--ink" id="btn-send">Enviar pedido</button>
+            </div>
+            <p class="err" id="form-status" role="alert"></p>
+          </form>
+        </div>
+
+        <!-- Confirmação -->
+        <div class="panel" id="panel-done" hidden>
+          <h3 class="panel__title" id="h-done" tabindex="-1">Pedido recebido. Enviamos os dados de pagamento por email.</h3>
+          <p class="help">Assim é que o pedido chega ao atelier, já em texto pronto para produção:</p>
+          <pre class="order-text" id="order-text" tabindex="0" aria-label="Texto do pedido"></pre>
+          <button type="button" class="btn btn--line" id="btn-new">Montar outra</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. CONJUNTOS -->
+    <section class="section wrap" id="conjuntos">
+      <div class="section-head">
+        <p class="kicker">Conjuntos prontos</p>
+        <h2>Para quem não quer decidir tudo.</h2>
+        <p class="lead lead--sm">Três pontos de partida. Depois ajustas o que quiseres no construtor.</p>
+      </div>
+      <div class="sets" id="sets"></div>
+    </section>
+
+    <!-- 7. RECARGAS -->
+    <section class="refill" id="recargas">
+      <div class="wrap refill__in">
+        <div>
+          <p class="kicker">Recargas</p>
+          <h2>Para o ano, trocas só o miolo.</h2>
+          <p class="lead">As argolas abrem. No fim do ano tiras o miolo usado, pões o novo e a capa dura continua contigo, anos a fio.</p>
+          <button type="button" class="btn btn--tomate" data-action="recarga">Montar recarga</button>
+        </div>
+        <div class="swap" aria-label="Exemplo de recarga">
+          <p class="swap__row"><span class="tag tag--old">Miolo <span data-year>2027</span></span><span class="swap__arrow" aria-hidden="true"></span><span class="tag tag--new">Miolo <span data-year-next>2028</span></span></p>
+          <p class="swap__cover"><span class="tag tag--cover">A tua capa fica</span></p>
+          <p class="swap__price">Recarga base: <strong data-price="refill-base">19 €</strong> em vez de <strong data-price="base">43 €</strong>.</p>
+          <p class="swap__note">Serve em qualquer capa A5 de 6 argolas. Preços de exemplo nesta demo.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. FAQ -->
+    <section class="section wrap" id="perguntas">
+      <div class="section-head">
+        <p class="kicker">Perguntas</p>
+        <h2>Perguntas frequentes.</h2>
+      </div>
+      <div class="faq">
+        <details>
+          <summary>Quanto tempo demora a produção?</summary>
+          <p>O prazo de produção é de [PRAZO], contado a partir do momento em que o pagamento entra.</p>
+        </details>
+        <details>
+          <summary>Como pago?</summary>
+          <p>Por MB Way ou transferência bancária, depois de fazeres o pedido. Enviamos os dados por email e a produção começa quando o pagamento entra.</p>
+        </details>
+        <details>
+          <summary>Como é feito o envio?</summary>
+          <p>Enviamos por CTT. Os portes são [PORTES].</p>
+        </details>
+        <details>
+          <summary>Posso devolver?</summary>
+          <p>Os produtos personalizados não têm direito de livre resolução de 14 dias. Se vier com defeito, fazemos a troca.</p>
+        </details>
+        <details>
+          <summary>As recargas servem na minha capa?</summary>
+          <p>Servem em qualquer capa A5 de 6 argolas, seja nossa ou não.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <!-- 9. RODAPÉ -->
+  <footer class="footer">
+    <div class="wrap footer__in">
+      <a class="logo" href="#top" aria-label="ARGO, início">ARG<span class="logo__o" aria-hidden="true"></span></a>
+      <ul class="footer__links">
+        <li><button type="button" class="link" data-dialog="dlg-termos">Termos e condições</button></li>
+        <li><button type="button" class="link" data-dialog="dlg-privacidade">Política de privacidade</button></li>
+        <li><a href="https://www.livroreclamacoes.pt" target="_blank" rel="noopener">Livro de Reclamações</a></li>
+        <!-- [PLACEHOLDER] trocar pelo perfil de Instagram do cliente -->
+        <li><a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a></li>
+      </ul>
+      <p class="footer__credit">Demo por <a href="https://blankstudios.pt" target="_blank" rel="noopener">Blank Studios</a></p>
+    </div>
+  </footer>
+
+  <dialog id="dlg-termos" aria-labelledby="dlg-termos-t">
+    <h2 id="dlg-termos-t">Termos e condições</h2>
+    <p>[PLACEHOLDER: texto dos Termos e condições, a fornecer pelo cliente.]</p>
+    <form method="dialog"><button class="btn btn--ink">Fechar</button></form>
+  </dialog>
+  <dialog id="dlg-privacidade" aria-labelledby="dlg-priv-t">
+    <h2 id="dlg-priv-t">Política de privacidade</h2>
+    <p>[PLACEHOLDER: texto da Política de privacidade, a fornecer pelo cliente.]</p>
+    <form method="dialog"><button class="btn btn--ink">Fechar</button></form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
