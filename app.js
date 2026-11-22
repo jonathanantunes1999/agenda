@@ -13,8 +13,10 @@ const CONFIG = {
     ["Set", "setembro"], ["Out", "outubro"], ["Nov", "novembro"], ["Dez", "dezembro"],
   ],
   colors: [
-    { id: "florida", label: "Florida", hex: "#2F4A3C", pattern: true },
-    { id: "azulejo", label: "Azulejo", hex: "#3E5F8A" },
+    // "pattern": estampa desenhada sobre a cor. "spine" e "text" afinam a lombada e a cor do nome gravado.
+    { id: "florida", label: "Florida", hex: "#2F4A3C", pattern: "flowers" },
+    { id: "azulejo", label: "Azulejo", hex: "#FBF8F1", pattern: "azulejo", spine: "#3E5F8A", text: "#3E5F8A" },
+    { id: "azul",    label: "Azul",    hex: "#3E5F8A" },
     { id: "salva",   label: "Salva",   hex: "#A9B79C" },
     { id: "caqui",   label: "Caqui",   hex: "#C9B99A" },
     { id: "cafe",    label: "Café",    hex: "#4A3426" },
@@ -168,9 +170,23 @@ function createAgenda(host) {
   const pattern = `<pattern id="flor${uid}" width="46" height="46" patternUnits="userSpaceOnUse" patternTransform="rotate(10)">` +
     `<g fill="#F4EDE1">${flower(12, 12, 1)}${flower(35, 34, 0.8)}<circle cx="35" cy="10" r="1.6"/><circle cx="10" cy="36" r="1.6"/><circle cx="23" cy="24" r="1.2"/></g></pattern>`;
 
+  // Estampa "Azulejo": grelha de losangos em traços interrompidos, pontos nos cruzamentos e flor de 4 pétalas.
+  const AZ = "#3E5F8A", AZ_LIGHT = mix(AZ, [255, 255, 255], 0.22), AZ_DARK = mix(AZ, [0, 0, 0], 0.18);
+  const AZ_STEP = 30 * Math.SQRT2, AZ_DASH = 27;  // distância entre cruzamentos e comprimento do traço
+  const azLines = [-120, -60, 0, 60, 120].map((c) => `<line x1="-60" y1="${-60 - c}" x2="180" y2="${180 - c}"/>`)
+    .concat([0, 60, 120, 180, 240].map((c) => `<line x1="-60" y1="${c + 60}" x2="180" y2="${c - 180}"/>`)).join("");
+  const azPetal = `<path d="M0-3C6-6 8-14 0-17C-8-14-6-6 0-3Z"/>`;
+  const azFlower = ([x, y]) => `<g transform="translate(${x} ${y})" fill="${AZ_DARK}">` +
+    [0, 90, 180, 270].map((a) => `<g transform="rotate(${a})">${azPetal}</g>`).join("") + `<circle r="2.4" fill="${AZ_LIGHT}"/></g>`;
+  const azDots = [[60, 0], [60, 120], [0, 60], [120, 60], [60, 60], [30, 30], [90, 30], [30, 90], [90, 90]]
+    .map(([x, y]) => `<circle cx="${x}" cy="${y}" r="3.2"/>`).join("");
+  const tiles = `<pattern id="azul${uid}" width="120" height="120" patternUnits="userSpaceOnUse">` +
+    `<g stroke="${AZ}" stroke-width="2.4" stroke-linecap="round" fill="none" stroke-dasharray="${AZ_DASH} ${(AZ_STEP - AZ_DASH).toFixed(2)}" stroke-dashoffset="${(AZ_DASH + (AZ_STEP - AZ_DASH) / 2).toFixed(2)}">${azLines}</g>` +
+    `<g fill="${AZ_LIGHT}">${azDots}</g>${[[0, 0], [120, 0], [0, 120], [120, 120]].map(azFlower).join("")}</pattern>`;
+
   host.innerHTML = `
     <svg class="agenda" viewBox="0 0 460 540" focusable="false">
-      <defs>${pattern}</defs>
+      <defs>${pattern}${tiles}</defs>
       <rect class="pocket" x="338" y="458" width="76" height="64" rx="8"/>
       ${tabs}
       <g class="stickers" transform="rotate(-3 238 52)">
@@ -183,6 +199,7 @@ function createAgenda(host) {
       <path class="pages-edge" d="M383 54V480M386 58V476"/>
       <rect class="cover" x="62" y="40" width="318" height="454" rx="10"/>
       <rect class="flowers" x="62" y="40" width="318" height="454" rx="10" fill="url(#flor${uid})"/>
+      <rect class="tiles" x="62" y="40" width="318" height="454" rx="10" fill="url(#azul${uid})"/>
       <g class="art" transform="translate(100 44)"></g>
       <path class="spine" d="M72 40H96V494H72A10 10 0 0 1 62 484V50A10 10 0 0 1 72 40Z"/>
       <path class="crease" d="M96 41V493"/>
@@ -216,13 +233,14 @@ function createAgenda(host) {
       const dark = isDark(cover);
       const vars = {
         "--cover": cover,
-        "--spine": dark ? mix(cover, [255, 255, 255], 0.1) : mix(cover, [0, 0, 0], 0.2),
+        "--spine": c.spine || (dark ? mix(cover, [255, 255, 255], 0.1) : mix(cover, [0, 0, 0], 0.2)),
         "--band": dark ? "#EADFC7" : mix(cover, [0, 0, 0], 0.4),
-        "--on-cover": onColor(cover),
+        "--on-cover": c.text || onColor(cover),
       };
       Object.entries(vars).forEach(([k, v]) => svg.style.setProperty(k, v));
       svg.classList.toggle("is-refill", refill);
-      $(".flowers", svg).classList.toggle("on", Boolean(c.pattern));
+      $(".flowers", svg).classList.toggle("on", c.pattern === "flowers");
+      $(".tiles", svg).classList.toggle("on", c.pattern === "azulejo");
       const art = drawingOf(s, "capa");
       artEl.innerHTML = art ? strokesToSVG(art.strokes, 250, 446) : "";
 
@@ -517,7 +535,7 @@ const heroAgenda = createAgenda($("#agenda-hero"));
 function buildControls() {
   $("#colors").innerHTML = CONFIG.colors.map((c) => `
     <label class="swatch"><input type="radio" name="color" value="${c.id}">
-      <span class="swatch__dot${c.pattern ? " swatch__dot--flor" : ""}" style="--c:${c.hex}"></span><span class="swatch__name">${c.label}</span></label>`).join("");
+      <span class="swatch__dot${c.pattern ? " swatch__dot--" + c.pattern : ""}" style="--c:${c.hex}"></span><span class="swatch__name">${c.label}</span></label>`).join("");
   $("#months").innerHTML = CONFIG.months.map((m, i) => `
     <label class="month"><input type="radio" name="start" value="${i}"><span>${m[0]}</span></label>`).join("");
   const opt = (kind, x) => `
@@ -756,7 +774,7 @@ function startHero() {
   ];
   let view = { ...clone(CONFIG.base), ...frames[0] };
   const box = $("#hero-swatches");
-  box.innerHTML = CONFIG.colors.map((c) => `<button type="button" class="dot${c.pattern ? " dot--flor" : ""}" data-color="${c.id}" aria-label="Capa ${c.label}" aria-pressed="false" style="--c:${c.hex}"></button>`).join("");
+  box.innerHTML = CONFIG.colors.map((c) => `<button type="button" class="dot${c.pattern ? " dot--" + c.pattern : ""}" data-color="${c.id}" aria-label="Capa ${c.label}" aria-pressed="false" style="--c:${c.hex}"></button>`).join("");
   const show = (patch) => {
     view = { ...view, ...patch };
     heroAgenda.update(view);

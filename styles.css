@@ -100,10 +100,12 @@ h2 { font-size: clamp(3rem, 7.4vw, 6rem); }
 .tagline svg { width: 28px; height: 28px; flex: none; fill: none; stroke: var(--deep); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .cta-row { display: flex; flex-wrap: wrap; gap: 12px; }
 .hero__stage { display: grid; gap: 10px; justify-items: center; }
-.hero__swatches { display: flex; gap: 4px; }
+.hero__swatches { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 4px; }
+.hero__stage, .hero__copy { min-width: 0; }
 .dot { width: 44px; height: 44px; padding: 0; border: 0; background: none; position: relative; border-radius: 50%; }
 .dot::before { content: ""; position: absolute; inset: 7px; border-radius: 50%; background: var(--c); border: 1.5px solid var(--ink); transition: transform .15s; }
-.dot--flor::before, .swatch__dot--flor { background-image: radial-gradient(#F4EDE1 1.7px, transparent 2.1px); background-size: 9px 9px; }
+.dot--flowers::before, .swatch__dot--flowers { background-image: radial-gradient(#F4EDE1 1.7px, transparent 2.1px); background-size: 9px 9px; }
+.dot--azulejo::before, .swatch__dot--azulejo { background-image: repeating-linear-gradient(45deg, #3E5F8A 0 1.4px, transparent 1.4px 7px), repeating-linear-gradient(-45deg, #3E5F8A 0 1.4px, transparent 1.4px 7px); }
 .dot:hover::before { transform: scale(1.12); }
 .dot[aria-pressed="true"]::before { box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px var(--ink); }
 .hero__art { position: relative; width: 100%; max-width: 500px; margin-inline: auto; aspect-ratio: 1 / 1.08; display: grid; place-items: center; overflow: clip; }
@@ -244,6 +246,8 @@ input[aria-invalid="true"] { border-color: #A8200A; border-width: 2.5px; }
 .agenda .cover { fill: var(--cover); stroke: transparent; stroke-width: 2; transition: fill .35s, stroke .35s; }
 .agenda .flowers { opacity: 0; transition: opacity .35s; }
 .agenda .flowers.on { opacity: 1; }
+.agenda .tiles { opacity: 0; transition: opacity .35s; }
+.agenda .tiles.on { opacity: 1; }
 .agenda .spine { fill: var(--spine); transition: fill .35s; }
 .agenda .crease { stroke: rgba(0, 0, 0, .22); stroke-width: 1.5; fill: none; }
 .agenda .pages { fill: #FFFFFF; stroke: #E3D9C6; stroke-width: 1.5; }
@@ -273,7 +277,7 @@ input[aria-invalid="true"] { border-color: #A8200A; border-width: 2.5px; }
 .agenda .tab { transition: transform .5s cubic-bezier(.2, .9, .25, 1), opacity .3s; }
 .agenda .tab text { font: 700 23px var(--font-display); }
 .agenda.is-refill .cover { fill: transparent; stroke: var(--ink); stroke-dasharray: 9 8; }
-.agenda.is-refill .spine, .agenda.is-refill .crease, .agenda.is-refill .plaque, .agenda.is-refill .flowers, .agenda.is-refill .name { opacity: 0; }
+.agenda.is-refill .spine, .agenda.is-refill .crease, .agenda.is-refill .plaque, .agenda.is-refill .flowers, .agenda.is-refill .tiles, .agenda.is-refill .name { opacity: 0; }
 .agenda.is-refill .refill-label { opacity: 1; }
 
 /* ---------- Conjuntos ---------- */
