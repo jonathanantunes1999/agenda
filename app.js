@@ -40,6 +40,9 @@ const CONFIG = {
     { id: "organizada", label: "Organizada", modules: ["mensal", "semanal", "notas"], finishes: ["separadores"] },
     { id: "completa", label: "Completa", modules: ["mensal", "semanal", "habitos", "financas", "notas"], finishes: ["separadores", "elastico"] },
   ],
+  // Pedidos por email via Web3Forms (web3forms.com). Cola aqui a "Access Key" do cliente.
+  // Com a chave vazia o envio é só simulado (útil para demos).
+  orders: { accessKey: "", subject: "Novo pedido bica a bica" },
   base: { mode: "agenda", color: "florida", name: "", start: 0, modules: ["mensal", "semanal", "notas"], finishes: [] },
 };
 
@@ -240,19 +243,33 @@ function buildOrderText(s, c) {
 }
 
 /**
- * ÚNICO ponto a ligar a um serviço de formulários (Formspree, Getform, Web3Forms...).
- * Por agora o envio é simulado. Para ligar, troca o corpo por algo como:
- *
- *   const res = await fetch("https://formspree.io/f/O_TEU_ID", {
- *     method: "POST",
- *     headers: { "Content-Type": "application/json", Accept: "application/json" },
- *     body: JSON.stringify({ name: order.customer.nome, email: order.customer.email, message: order.text }),
- *   });
- *   if (!res.ok) throw new Error("Falha no envio");
+ * ÚNICO ponto de envio do pedido. Com CONFIG.orders.accessKey preenchida, manda o texto do pedido
+ * por email através do Web3Forms; sem chave, simula. Lança erro se o envio falhar.
  */
 async function submitOrder(order) {
-  await new Promise((resolve) => setTimeout(resolve, 700));
-  console.info("[Bica a Bica demo] Pedido simulado:\n" + order.text);
+  const { accessKey, subject } = CONFIG.orders;
+  if (!accessKey) {
+    await new Promise((resolve) => setTimeout(resolve, 700));
+    console.info("[Bica a Bica demo] Sem Access Key: pedido simulado.\n" + order.text);
+    return;
+  }
+  const c = order.customer;
+  const res = await fetch("https://api.web3forms.com/submit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify({
+      access_key: accessKey,
+      subject: `${subject} · ${c.nome}`,
+      from_name: "bica a bica",
+      name: c.nome,
+      email: c.email,
+      phone: c.telemovel,
+      message: order.text,
+      botcheck: order.botcheck,
+    }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || !data.success) throw new Error(data.message || "Falha no envio");
 }
 
 /* ==========================================================================
@@ -436,7 +453,7 @@ form.addEventListener("submit", async (e) => {
   send.textContent = "A enviar…";
   $("#form-status").textContent = "";
   try {
-    const order = { customer: data, text: buildOrderText(state, data) };
+    const order = { customer: data, text: buildOrderText(state, data), botcheck: $("#f-botcheck").checked };
     await submitOrder(order);
     $("#order-text").textContent = order.text;
     showPanel("done", true);
