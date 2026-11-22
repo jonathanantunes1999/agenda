@@ -255,8 +255,12 @@ input[aria-invalid="true"] { border-color: #A8200A; border-width: 2.5px; }
 .agenda .plaque use { fill: none; stroke: var(--ink); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .agenda .name { fill: var(--on-cover); stroke: var(--cover); stroke-width: 8px; stroke-linejoin: round; paint-order: stroke; font: 700 28px var(--font-display); letter-spacing: 0.02em; transition: opacity .3s; }
 .agenda .refill-label { fill: var(--ink); font: 700 42px var(--font-display); opacity: 0; transition: opacity .3s; }
-.agenda .elastic { fill: var(--band); opacity: 0; transition: opacity .3s, fill .35s; }
-.agenda .elastic.on { opacity: 1; }
+.agenda .pen { opacity: 0; transition: opacity .3s; }
+.agenda .pen.on { opacity: 1; }
+.agenda .pen-body { fill: #F4EDE1; stroke: var(--ink); stroke-width: 1.6; }
+.agenda .pen-tip { fill: #7F6048; stroke: var(--ink); stroke-width: 1.6; stroke-linejoin: round; }
+.agenda .pen-clip { fill: #C9B99A; stroke: var(--ink); stroke-width: 1.2; }
+.agenda .strap { fill: var(--band); stroke: var(--ink); stroke-width: 1.4; transition: fill .35s; }
 .agenda .pocket { fill: rgba(255, 255, 255, .6); stroke: var(--ink); stroke-width: 1.5; opacity: 0; transition: opacity .3s; }
 .agenda .pocket.on { opacity: 1; }
 .agenda .stickers { opacity: 0; transition: opacity .3s; }

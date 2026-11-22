@@ -31,14 +31,14 @@ const CONFIG = {
   ],
   finishes: [
     { id: "separadores", label: "Separadores impressos", price: 3, desc: "Folhas de separação com o nome de cada módulo." },
-    { id: "elastico",    label: "Elástico de fecho",     price: 2, desc: "Mantém a agenda fechada na mala.", coverOnly: true },
+    { id: "caneta",      label: "Suporte de caneta",     price: 2, desc: "Passador na capa para guardares a tua caneta.", coverOnly: true },
     { id: "bolsa",       label: "Bolsa transparente",    price: 3, desc: "Para guardar papéis soltos e cartões." },
     { id: "stickers",    label: "Folha de stickers",     price: 4, desc: "Chávenas, corações, laços e etiquetas como \"to-do\" e \"compras\"." },
   ],
   sets: [
     { id: "essencial", label: "Essencial", modules: ["mensal", "notas"], finishes: [] },
     { id: "organizada", label: "Organizada", modules: ["mensal", "semanal", "notas"], finishes: ["separadores"] },
-    { id: "completa", label: "Completa", modules: ["mensal", "semanal", "habitos", "financas", "notas"], finishes: ["separadores", "elastico"] },
+    { id: "completa", label: "Completa", modules: ["mensal", "semanal", "habitos", "financas", "notas"], finishes: ["separadores", "caneta"] },
   ],
   // Pedidos por email via Web3Forms (web3forms.com). Cola aqui a "Access Key" do cliente.
   // Com a chave vazia o envio é só simulado (útil para demos).
@@ -97,7 +97,7 @@ function save() {
 
 const isRefill = (s) => s.mode === "recarga";
 
-/** Linhas de preço e total para um estado. Em recarga não há capa, nome nem elástico. */
+/** Linhas de preço e total para um estado. Em recarga não há capa, nome nem suporte de caneta. */
 function quote(s) {
   const lines = [];
   if (!isRefill(s)) {
@@ -161,7 +161,13 @@ function createAgenda(host) {
         <use href="#heart" x="219" y="266" width="26" height="26"/>
       </g>
       <text class="refill-label" x="226" y="278" text-anchor="middle">a tua capa</text>
-      <rect class="elastic" x="358" y="34" width="12" height="466" rx="3"/>
+      <g class="pen">
+        <rect class="pen-body" x="350" y="78" width="16" height="262" rx="8"/>
+        <path class="pen-tip" d="M350 330h16l-8 22z"/>
+        <rect class="pen-clip" x="364" y="92" width="4" height="60" rx="2"/>
+        <rect class="strap" x="343" y="168" width="30" height="12" rx="6"/>
+        <rect class="strap" x="343" y="262" width="30" height="12" rx="6"/>
+      </g>
       <text class="name" x="226" y="458" text-anchor="middle"></text>
       ${rings}
     </svg>`;
@@ -189,7 +195,7 @@ function createAgenda(host) {
       const name = s.name.trim();
       nameEl.textContent = name;
       nameEl.style.fontSize = name.length > 15 ? "22px" : name.length > 12 ? "25px" : "28px";
-      // Nomes muito largos (ex.: muitos "W") são comprimidos para não passarem das argolas/elástico.
+      // Nomes muito largos (ex.: muitos "W") são comprimidos para não passarem das argolas/caneta.
       nameEl.removeAttribute("textLength");
       if (name && nameEl.getComputedTextLength() > 236) {
         nameEl.setAttribute("textLength", 236);
@@ -204,7 +210,7 @@ function createAgenda(host) {
         g.style.opacity = on ? 1 : 0;
         if (on) k++;
       });
-      $(".elastic", svg).classList.toggle("on", !refill && s.finishes.includes("elastico"));
+      $(".pen", svg).classList.toggle("on", !refill && s.finishes.includes("caneta"));
       $(".pocket", svg).classList.toggle("on", s.finishes.includes("bolsa"));
       $(".stickers", svg).classList.toggle("on", s.finishes.includes("stickers"));
     },
