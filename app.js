@@ -33,6 +33,7 @@ const CONFIG = {
     { id: "separadores", label: "Separadores impressos", price: 3, desc: "Folhas de separação com o nome de cada módulo." },
     { id: "elastico",    label: "Elástico de fecho",     price: 2, desc: "Mantém a agenda fechada na mala.", coverOnly: true },
     { id: "bolsa",       label: "Bolsa transparente",    price: 3, desc: "Para guardar papéis soltos e cartões." },
+    { id: "stickers",    label: "Folha de stickers",     price: 4, desc: "Chávenas, corações, laços e etiquetas como \"to-do\" e \"compras\"." },
   ],
   sets: [
     { id: "essencial", label: "Essencial", modules: ["mensal", "notas"], finishes: [] },
@@ -139,6 +140,12 @@ function createAgenda(host) {
       <defs>${pattern}</defs>
       <rect class="pocket" x="338" y="458" width="76" height="64" rx="8"/>
       ${tabs}
+      <g class="stickers" transform="rotate(-3 238 52)">
+        <rect x="146" y="10" width="184" height="90" rx="8"/>
+        <use href="#heart" x="158" y="13" width="20" height="20"/><use href="#cup" x="190" y="13" width="22" height="22"/>
+        <use href="#sparkle" x="226" y="14" width="18" height="18"/><use href="#leaf" x="258" y="12" width="22" height="22"/>
+        <rect class="stk" x="290" y="15" width="30" height="16" rx="8"/>
+      </g>
       <rect class="pages" x="72" y="48" width="316" height="438" rx="4"/>
       <path class="pages-edge" d="M383 54V480M386 58V476"/>
       <rect class="cover" x="62" y="40" width="318" height="454" rx="10"/>
@@ -196,6 +203,7 @@ function createAgenda(host) {
       });
       $(".elastic", svg).classList.toggle("on", !refill && s.finishes.includes("elastico"));
       $(".pocket", svg).classList.toggle("on", s.finishes.includes("bolsa"));
+      $(".stickers", svg).classList.toggle("on", s.finishes.includes("stickers"));
     },
   };
 }

@@ -259,6 +259,11 @@ input[aria-invalid="true"] { border-color: #A8200A; border-width: 2.5px; }
 .agenda .elastic.on { opacity: 1; }
 .agenda .pocket { fill: rgba(255, 255, 255, .6); stroke: var(--ink); stroke-width: 1.5; opacity: 0; transition: opacity .3s; }
 .agenda .pocket.on { opacity: 1; }
+.agenda .stickers { opacity: 0; transition: opacity .3s; }
+.agenda .stickers.on { opacity: 1; }
+.agenda .stickers rect:first-child { fill: #FBF7EE; stroke: var(--ink); stroke-width: 1.5; }
+.agenda .stickers use { fill: none; stroke: var(--ink); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.agenda .stickers .stk { fill: #C9B99A; stroke: var(--ink); stroke-width: 1.2; }
 .agenda .ring { fill: none; stroke: #A4ABA6; stroke-width: 5; }
 .agenda .ring-hi { fill: none; stroke: #F4EDE1; stroke-width: 1.6; }
 .agenda .tab { transition: transform .5s cubic-bezier(.2, .9, .25, 1), opacity .3s; }
