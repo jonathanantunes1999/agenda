@@ -13,21 +13,21 @@ const CONFIG = {
     ["Set", "setembro"], ["Out", "outubro"], ["Nov", "novembro"], ["Dez", "dezembro"],
   ],
   colors: [
-    { id: "tinta",  label: "Tinta",  hex: "#1B2A33" },
-    { id: "oceano", label: "Oceano", hex: "#1F5F8B" },
-    { id: "celeste", label: "Celeste", hex: "#A9D3F5" },
-    { id: "salvia", label: "Sálvia", hex: "#A5BFA0" },
-    { id: "areia",  label: "Areia",  hex: "#EAD9BE" },
-    { id: "rosa",   label: "Rosa",   hex: "#F6B3C6" },
+    { id: "florida", label: "Florida", hex: "#2F4A3C", pattern: true },
+    { id: "azulejo", label: "Azulejo", hex: "#3E5F8A" },
+    { id: "salva",   label: "Salva",   hex: "#A9B79C" },
+    { id: "caqui",   label: "Caqui",   hex: "#C9B99A" },
+    { id: "cafe",    label: "Café",    hex: "#4A3426" },
+    { id: "po",      label: "Pó",      hex: "#ABBBC7" },
   ],
   modules: [
-    { id: "mensal",   label: "Vista mensal",     tab: "MÊS", price: 6,  color: "#5BB6E8", desc: "Um mês em duas páginas, para ver o quadro geral." },
-    { id: "semanal",  label: "Semanal",          tab: "SEM", price: 9,  color: "#FFD166", desc: "Sete dias por dupla de páginas, com espaço para escrever." },
-    { id: "diario",   label: "Diário",           tab: "DIA", price: 14, color: "#1F5F8B", desc: "Uma página por dia, para quem escreve muito." },
-    { id: "notas",    label: "Notas pontilhadas", tab: "NOT", price: 4,  color: "#6CC5A0", desc: "Folhas pontilhadas livres para listas, esboços e ideias." },
-    { id: "habitos",  label: "Tracker de hábitos", tab: "HÁB", price: 4, color: "#A9D3F5", desc: "Grelha mensal para marcar o que repetes todos os dias." },
-    { id: "financas", label: "Finanças",         tab: "FIN", price: 4,  color: "#12303A", desc: "Registo de despesas e orçamento mês a mês." },
-    { id: "leituras", label: "Leituras",         tab: "LEI", price: 3,  color: "#F6B3C6", desc: "Lista do que lês, com espaço para notas." },
+    { id: "mensal",   label: "Vista mensal",     tab: "mês", price: 6,  color: "#3E5F8A", desc: "Um mês em duas páginas, para ver o quadro geral." },
+    { id: "semanal",  label: "Semanal",          tab: "sem", price: 9,  color: "#C9B99A", desc: "Sete dias por dupla de páginas, com espaço para escrever." },
+    { id: "diario",   label: "Diário",           tab: "dia", price: 14, color: "#4A3426", desc: "Uma página por dia, para quem escreve muito." },
+    { id: "notas",    label: "Notas pontilhadas", tab: "not", price: 4,  color: "#A9B79C", desc: "Folhas pontilhadas livres para listas, esboços e ideias." },
+    { id: "habitos",  label: "Tracker de hábitos", tab: "háb", price: 4, color: "#ABBBC7", desc: "Grelha mensal para marcar o que repetes todos os dias." },
+    { id: "financas", label: "Finanças",         tab: "fin", price: 4,  color: "#2F4A3C", desc: "Registo de despesas e orçamento mês a mês." },
+    { id: "leituras", label: "Leituras",         tab: "lei", price: 3,  color: "#7F6048", desc: "Lista do que lês, com espaço para notas." },
   ],
   finishes: [
     { id: "separadores", label: "Separadores impressos", price: 3, desc: "Folhas de separação com o nome de cada módulo." },
@@ -39,7 +39,7 @@ const CONFIG = {
     { id: "organizada", label: "Organizada", modules: ["mensal", "semanal", "notas"], finishes: ["separadores"] },
     { id: "completa", label: "Completa", modules: ["mensal", "semanal", "habitos", "financas", "notas"], finishes: ["separadores", "elastico"] },
   ],
-  base: { mode: "agenda", color: "tinta", name: "", start: 0, modules: ["mensal", "semanal", "notas"], finishes: [] },
+  base: { mode: "agenda", color: "florida", name: "", start: 0, modules: ["mensal", "semanal", "notas"], finishes: [] },
 };
 
 /* ==========================================================================
@@ -53,7 +53,7 @@ const reduceMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matche
 const byId = (list, id) => list.find((x) => x.id === id);
 const clone = (o) => JSON.parse(JSON.stringify(o));
 
-const INK = "#12303A", PAPER = "#F3F9F4";
+const INK = "#2F4A3C", PAPER = "#F4EDE1";
 const rgb = (hex) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
 const lum = (hex) => {
   const [r, g, b] = rgb(hex).map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; });
@@ -116,28 +116,40 @@ function period(s) {
 /* ==========================================================================
    Componente da agenda (SVG), usado no hero e no construtor
    ========================================================================== */
+let agendaSeq = 0;
 function createAgenda(host) {
+  const uid = ++agendaSeq;
   const tabs = CONFIG.modules.map((m) =>
     `<g class="tab" data-id="${m.id}"><rect x="380" y="0" width="60" height="40" rx="9" fill="${m.color}"/>` +
-    `<text x="414" y="25" text-anchor="middle" fill="${onColor(m.color)}">${m.tab}</text></g>`).join("");
+    `<text x="414" y="27" text-anchor="middle" fill="${onColor(m.color)}">${m.tab}</text></g>`).join("");
   const rings = Array.from({ length: 6 }, (_, i) => {
     const y = 40 + (454 * (i + 0.5)) / 6;
     return `<rect class="ring" x="46" y="${y - 9}" width="46" height="18" rx="9"/>` +
            `<rect class="ring-hi" x="48" y="${y - 10.5}" width="42" height="18" rx="9"/>`;
   }).join("");
-  const yy = String(CONFIG.year).slice(-2);
+  // Estampa florida (capa "Florida"): flores de 5 pétalas em padrão repetido.
+  const flower = (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s})">` +
+    [0, 72, 144, 216, 288].map((a) => `<ellipse cx="0" cy="-5" rx="3" ry="5" transform="rotate(${a})"/>`).join("") +
+    `<circle r="2.2" fill="#C9B99A"/></g>`;
+  const pattern = `<pattern id="flor${uid}" width="46" height="46" patternUnits="userSpaceOnUse" patternTransform="rotate(10)">` +
+    `<g fill="#F4EDE1">${flower(12, 12, 1)}${flower(35, 34, 0.8)}<circle cx="35" cy="10" r="1.6"/><circle cx="10" cy="36" r="1.6"/><circle cx="23" cy="24" r="1.2"/></g></pattern>`;
 
   host.innerHTML = `
     <svg class="agenda" viewBox="0 0 460 540" focusable="false">
+      <defs>${pattern}</defs>
       <rect class="pocket" x="338" y="458" width="76" height="64" rx="8"/>
       ${tabs}
       <rect class="pages" x="72" y="48" width="316" height="438" rx="4"/>
       <path class="pages-edge" d="M383 54V480M386 58V476"/>
       <rect class="cover" x="62" y="40" width="318" height="454" rx="10"/>
+      <rect class="flowers" x="62" y="40" width="318" height="454" rx="10" fill="url(#flor${uid})"/>
       <path class="spine" d="M72 40H96V494H72A10 10 0 0 1 62 484V50A10 10 0 0 1 72 40Z"/>
       <path class="crease" d="M96 41V493"/>
-      <text class="num-hi" x="232" y="305" text-anchor="middle">${yy}</text>
-      <text class="num" x="232" y="305" text-anchor="middle">${yy}</text>
+      <g class="plaque">
+        <rect x="148" y="196" width="168" height="108" rx="12"/><rect x="156" y="204" width="152" height="92" rx="7"/>
+        <text x="232" y="258" text-anchor="middle">${CONFIG.year}</text>
+        <use href="#heart" x="219" y="266" width="26" height="26"/>
+      </g>
       <text class="refill-label" x="226" y="278" text-anchor="middle">a tua capa</text>
       <rect class="elastic" x="358" y="34" width="12" height="466" rx="3"/>
       <text class="name" x="226" y="458" text-anchor="middle"></text>
@@ -151,22 +163,22 @@ function createAgenda(host) {
   return {
     update(s) {
       const refill = isRefill(s);
-      const cover = byId(CONFIG.colors, s.color).hex;
+      const c = byId(CONFIG.colors, s.color);
+      const cover = c.hex;
       const dark = isDark(cover);
       const vars = {
         "--cover": cover,
         "--spine": dark ? mix(cover, [255, 255, 255], 0.1) : mix(cover, [0, 0, 0], 0.2),
-        "--band": dark ? mix(cover, [255, 255, 255], 0.4) : mix(cover, [0, 0, 0], 0.4),
+        "--band": dark ? "#EADFC7" : mix(cover, [0, 0, 0], 0.4),
         "--on-cover": onColor(cover),
-        "--num": dark ? "rgba(255,255,255,.14)" : "rgba(20,20,22,.16)",
-        "--num-hi": dark ? "rgba(0,0,0,.45)" : "rgba(255,255,255,.5)",
       };
       Object.entries(vars).forEach(([k, v]) => svg.style.setProperty(k, v));
       svg.classList.toggle("is-refill", refill);
+      $(".flowers", svg).classList.toggle("on", Boolean(c.pattern));
 
-      const name = s.name.trim().toLocaleUpperCase("pt-PT");
+      const name = s.name.trim();
       nameEl.textContent = name;
-      nameEl.style.fontSize = name.length > 15 ? "13px" : name.length > 12 ? "15px" : "17px";
+      nameEl.style.fontSize = name.length > 15 ? "22px" : name.length > 12 ? "25px" : "28px";
       // Nomes muito largos (ex.: muitos "W") são comprimidos para não passarem das argolas/elástico.
       nameEl.removeAttribute("textLength");
       if (name && nameEl.getComputedTextLength() > 236) {
@@ -200,7 +212,7 @@ function buildOrderText(s, c) {
     `PEDIDO BICA A BICA · ${new Date().toLocaleString("pt-PT")}`,
     "=".repeat(48),
     refill ? "TIPO:   Só recarga (miolo A5 para 6 argolas, sem capa)" : "TIPO:   Agenda completa (capa dura A5, 6 argolas)",
-    ...(refill ? [] : [`CAPA:   ${color.label} (${color.hex})`, `NOME:   ${s.name.trim() ? s.name.trim().toLocaleUpperCase("pt-PT") : "(sem gravação)"}`]),
+    ...(refill ? [] : [`CAPA:   ${color.label} (${color.hex})`, `NOME:   ${s.name.trim() || "(sem gravação)"}`]),
     `INÍCIO: ${CONFIG.months[s.start][1]} de ${CONFIG.year} (12 meses: ${period(s)})`,
     "",
     "ITENS",
@@ -248,7 +260,7 @@ const heroAgenda = createAgenda($("#agenda-hero"));
 function buildControls() {
   $("#colors").innerHTML = CONFIG.colors.map((c) => `
     <label class="swatch"><input type="radio" name="color" value="${c.id}">
-      <span class="swatch__dot" style="--c:${c.hex}"></span><span class="swatch__name">${c.label}</span></label>`).join("");
+      <span class="swatch__dot${c.pattern ? " swatch__dot--flor" : ""}" style="--c:${c.hex}"></span><span class="swatch__name">${c.label}</span></label>`).join("");
   $("#months").innerHTML = CONFIG.months.map((m, i) => `
     <label class="month"><input type="radio" name="start" value="${i}"><span>${m[0]}</span></label>`).join("");
   const opt = (kind, x) => `
@@ -452,15 +464,15 @@ function fillConfigValues() {
 /* ---------- Hero: a agenda monta-se sozinha; as cores deixam experimentar ---------- */
 function startHero() {
   const frames = [
-    { color: "celeste", name: "",        modules: ["mensal", "semanal", "notas"] },
-    { color: "oceano",  name: "Marta",   modules: ["mensal", "semanal", "notas", "habitos"] },
-    { color: "tinta",   name: "",        modules: ["mensal", "diario", "financas", "notas"] },
-    { color: "salvia",  name: "Atelier", modules: ["mensal", "semanal", "leituras"] },
-    { color: "rosa",    name: "",        modules: CONFIG.modules.map((m) => m.id) },
+    { color: "florida", name: "",        modules: ["mensal", "semanal", "notas"] },
+    { color: "azulejo", name: "Marta",   modules: ["mensal", "semanal", "notas", "habitos"] },
+    { color: "caqui",   name: "",        modules: ["mensal", "diario", "financas", "notas"] },
+    { color: "salva",   name: "Atelier", modules: ["mensal", "semanal", "leituras"] },
+    { color: "cafe",    name: "",        modules: CONFIG.modules.map((m) => m.id) },
   ];
   let view = { ...clone(CONFIG.base), ...frames[0] };
   const box = $("#hero-swatches");
-  box.innerHTML = CONFIG.colors.map((c) => `<button type="button" class="dot" data-color="${c.id}" aria-label="Capa ${c.label}" aria-pressed="false" style="--c:${c.hex}"></button>`).join("");
+  box.innerHTML = CONFIG.colors.map((c) => `<button type="button" class="dot${c.pattern ? " dot--flor" : ""}" data-color="${c.id}" aria-label="Capa ${c.label}" aria-pressed="false" style="--c:${c.hex}"></button>`).join("");
   const show = (patch) => {
     view = { ...view, ...patch };
     heroAgenda.update(view);
