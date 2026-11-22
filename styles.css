@@ -80,6 +80,9 @@ h2 { font-size: clamp(2.4rem, 6vw, 5rem); letter-spacing: -0.02em; }
 .nav { position: sticky; top: 0; z-index: 30; height: var(--nav-h); background: rgba(243, 249, 244, .94); backdrop-filter: blur(8px); border-bottom: 1.5px solid var(--ink); }
 .nav__in { height: 100%; display: flex; align-items: center; gap: 16px; }
 .logo { font: 700 1.6rem/1 var(--font-display); letter-spacing: -0.02em; text-decoration: none; display: inline-flex; align-items: center; min-height: 44px; }
+.logo__img { height: 52px; width: auto; display: block; }
+.footer .logo__img { height: 58px; }
+.logo__text { display: none; align-items: center; }
 .logo__ring { width: 0.34em; height: 0.8em; border: 0.12em solid var(--accent); border-radius: 999px; margin-right: 0.3em; flex: none; }
 .logo em { font-style: italic; color: var(--deep); margin-inline: 0.26em; }
 .nav .nav__cta2 { display: none; }
@@ -306,7 +309,7 @@ input[aria-invalid="true"] { border-color: #A8200A; border-width: 2.5px; }
 .footer { border-top: 1.5px solid var(--ink); padding-block: 40px 48px; position: relative; }
 .footer::before { content: ""; position: absolute; left: 0; right: 0; top: -16px; height: 30px; background: var(--bg) var(--ring-tile) center / 34px 30px; background-repeat: space no-repeat; }
 .footer__in { display: grid; grid-template-columns: auto 1fr auto; gap: 24px 40px; align-items: center; padding-top: 12px; }
-.footer__links { display: flex; flex-wrap: wrap; gap: 4px 28px; justify-content: center; }
+.footer__links { display: flex; flex-wrap: wrap; gap: 4px 22px; justify-content: center; }
 .footer__links a { display: inline-flex; align-items: center; min-height: 44px; text-underline-offset: 3px; }
 .footer__credit { font-size: 0.9375rem; color: var(--muted); }
 .footer__credit a { color: var(--ink); font-weight: 600; }
@@ -317,6 +320,10 @@ dialog h2 { font-size: 2rem; margin-bottom: 14px; }
 dialog p { margin-bottom: 22px; color: var(--muted); }
 
 /* ---------- Responsivo ---------- */
+@media (max-width: 1240px) {
+  .footer__in { grid-template-columns: 1fr; justify-items: start; }
+  .footer__links { justify-content: flex-start; }
+}
 @media (max-width: 900px) {
   .wrap { width: min(1200px, 100% - 32px); }
   .nav__toggle { display: inline-flex; }
@@ -346,6 +353,8 @@ dialog p { margin-bottom: 22px; color: var(--muted); }
   .builder__grid.is-ordering .preview { position: static; border-bottom: 0; }
 }
 @media (max-width: 600px) {
+  .logo__img { display: none; }
+  .logo__text { display: inline-flex; }
   .logo { font-size: 1.35rem; }
   .opts, .form-grid { grid-template-columns: 1fr; }
   .months { grid-template-columns: repeat(4, 1fr); }
