@@ -42,7 +42,7 @@ const CONFIG = {
   ],
   // Pedidos por email via Web3Forms (web3forms.com). Cola aqui a "Access Key" do cliente.
   // Com a chave vazia o envio é só simulado (útil para demos).
-  orders: { accessKey: "", subject: "Novo pedido bica a bica" },
+  orders: { accessKey: "5d6722e8-49a0-4b9b-988f-6f8cf4d0568d", subject: "Novo pedido bica a bica" },
   base: { mode: "agenda", color: "florida", name: "", start: 0, modules: ["mensal", "semanal", "notas"], finishes: [] },
 };
 
