@@ -40,10 +40,19 @@ const CONFIG = {
     { id: "organizada", label: "Organizada", modules: ["mensal", "semanal", "notas"], finishes: ["separadores"] },
     { id: "completa", label: "Completa", modules: ["mensal", "semanal", "habitos", "financas", "notas"], finishes: ["separadores", "caneta"] },
   ],
+  // Desenhos à mão da cliente. "needs": onde se aplica (a capa ou um módulo). "aspect" = largura / altura da área.
+  drawings: [
+    { id: "capa",    label: "Desenho na capa",           price: 5, aspect: 250 / 446, needs: "cover",   help: "Desenha na capa. A etiqueta do ano fica ao centro, por cima do desenho." },
+    { id: "diario",  label: "Desenho no topo do diário", price: 3, aspect: 148 / 40,  needs: "diario",  help: "Este desenho repete-se no cimo de todas as páginas do diário." },
+    { id: "semanal", label: "Desenho no topo do semanal", price: 3, aspect: 148 / 40, needs: "semanal", help: "Este desenho repete-se no cimo de todas as páginas do semanal." },
+  ],
+  // Alojamento de imagens grátis (Cloudinary, upload sem assinatura): o email do pedido leva o link do desenho.
+  // Sem estes dois valores o desenho não é enviado; a cliente descarrega-o no fim do pedido.
+  upload: { cloudName: "", uploadPreset: "" },
   // Pedidos por email via Web3Forms (web3forms.com). Cola aqui a "Access Key" do cliente.
   // Com a chave vazia o envio é só simulado (útil para demos).
   orders: { accessKey: "5d6722e8-49a0-4b9b-988f-6f8cf4d0568d", subject: "Novo pedido bica a bica" },
-  base: { mode: "agenda", color: "florida", name: "", start: 0, modules: ["mensal", "semanal", "notas"], finishes: [] },
+  base: { mode: "agenda", color: "florida", name: "", start: 0, modules: ["mensal", "semanal", "notas"], finishes: [], drawings: { capa: null, diario: null, semanal: null } },
 };
 
 /* ==========================================================================
@@ -74,6 +83,20 @@ const isDark = (hex) => lum(hex) < 0.12;
 const STORE_KEY = "bicabica-builder-v1";
 let state = load();
 
+/** Valida um desenho guardado (pontos entre 0 e 1) para não confiar no que vem do localStorage. */
+function cleanDrawing(x) {
+  if (!x || !Array.isArray(x.strokes)) return null;
+  const n = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+  const strokes = x.strokes.slice(0, 400).map((s) => ({
+    c: s && /^#[0-9a-f]{6}$/i.test(s.c) ? s.c : INK,
+    w: s && Number.isFinite(s.w) ? n(s.w, 0.002, 0.08) : 0.016,
+    p: s && Array.isArray(s.p)
+      ? s.p.slice(0, 3000).filter((q) => Array.isArray(q) && q.length === 2 && q.every(Number.isFinite)).map(([a, b]) => [n(a, 0, 1), n(b, 0, 1)])
+      : [],
+  })).filter((s) => s.p.length > 0);
+  return strokes.length ? { strokes } : null;
+}
+
 function sanitize(p) {
   const d = clone(CONFIG.base);
   if (!p || typeof p !== "object") return d;
@@ -85,6 +108,7 @@ function sanitize(p) {
     start: Number.isInteger(p.start) && p.start >= 0 && p.start < 12 ? p.start : 0,
     modules: ids(CONFIG.modules, p.modules),
     finishes: ids(CONFIG.finishes, p.finishes),
+    drawings: Object.fromEntries(CONFIG.drawings.map((x) => [x.id, cleanDrawing(p.drawings && p.drawings[x.id])])),
   };
 }
 function load() {
@@ -108,8 +132,14 @@ function quote(s) {
   CONFIG.finishes
     .filter((f) => s.finishes.includes(f.id) && !(isRefill(s) && f.coverOnly))
     .forEach((f) => lines.push({ label: f.label, price: f.price }));
+  activeDrawings(s).filter((d) => d.price).forEach((d) => lines.push({ label: d.label, price: d.price }));
   return { lines, total: lines.reduce((t, l) => t + l.price, 0) };
 }
+
+/* Desenhos: só contam se o sítio onde se aplicam existir (capa fora da recarga; topo só com o módulo escolhido). */
+const drawingOf = (s, id) => (s.drawings && s.drawings[id]) || null;
+const drawingAvailable = (s, d) => (d.needs === "cover" ? !isRefill(s) : s.modules.includes(d.needs));
+const activeDrawings = (s) => CONFIG.drawings.filter((d) => drawingAvailable(s, d) && drawingOf(s, d.id));
 
 function period(s) {
   const end = (s.start + 11) % 12;
@@ -153,6 +183,7 @@ function createAgenda(host) {
       <path class="pages-edge" d="M383 54V480M386 58V476"/>
       <rect class="cover" x="62" y="40" width="318" height="454" rx="10"/>
       <rect class="flowers" x="62" y="40" width="318" height="454" rx="10" fill="url(#flor${uid})"/>
+      <g class="art" transform="translate(100 44)"></g>
       <path class="spine" d="M72 40H96V494H72A10 10 0 0 1 62 484V50A10 10 0 0 1 72 40Z"/>
       <path class="crease" d="M96 41V493"/>
       <g class="plaque">
@@ -174,6 +205,7 @@ function createAgenda(host) {
 
   const svg = $("svg", host);
   const nameEl = $(".name", svg);
+  const artEl = $(".art", svg);
   const tabEls = Object.fromEntries($$(".tab", svg).map((g) => [g.dataset.id, g]));
 
   return {
@@ -191,6 +223,8 @@ function createAgenda(host) {
       Object.entries(vars).forEach(([k, v]) => svg.style.setProperty(k, v));
       svg.classList.toggle("is-refill", refill);
       $(".flowers", svg).classList.toggle("on", Boolean(c.pattern));
+      const art = drawingOf(s, "capa");
+      artEl.innerHTML = art ? strokesToSVG(art.strokes, 250, 446) : "";
 
       const name = s.name.trim();
       nameEl.textContent = name;
@@ -220,8 +254,9 @@ function createAgenda(host) {
 /* ==========================================================================
    Pedido: texto para produção e envio
    ========================================================================== */
-function buildOrderText(s, c) {
+function buildOrderText(s, c, links = {}) {
   const q = quote(s);
+  const arts = activeDrawings(s);
   const refill = isRefill(s);
   const color = byId(CONFIG.colors, s.color);
   const rows = q.lines.map((l) => `  ${l.label.padEnd(36, ".")} ${money(l.price)}`);
@@ -235,6 +270,11 @@ function buildOrderText(s, c) {
     "ITENS",
     ...rows,
     `  ${"TOTAL".padEnd(36, ".")} ${money(q.total)}`,
+    ...(arts.length
+      ? ["", "DESENHOS FEITOS PELA CLIENTE (PNG com fundo transparente, prontos a imprimir)",
+         ...arts.map((d) => `  ${d.label}: ${links[d.id] || "sem link (pedir o ficheiro à cliente por email)"}`),
+         ...(arts.some((d) => d.id === "capa") ? ["  Capa: o desenho ocupa a área da capa à direita da lombada; a etiqueta do ano fica ao centro, por cima."] : [])]
+      : []),
     "",
     "CLIENTE",
     `  Nome:       ${c.nome}`,
@@ -277,6 +317,191 @@ async function submitOrder(order) {
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok || !data.success) throw new Error(data.message || "Falha no envio");
+}
+
+/* ==========================================================================
+   Desenho à mão: capa e topo das páginas do diário e do semanal
+   Os traços guardam-se em vetor (pontos entre 0 e 1), por isso escalam sem perder qualidade.
+   ========================================================================== */
+const PEN_COLORS = [["Creme", "#F4EDE1"], ["Verde", "#2F4A3C"], ["Azulejo", "#3E5F8A"], ["Caqui", "#C9B99A"], ["Café", "#4A3426"], ["Rosa", "#F6B3C6"]];
+const PEN_WIDTHS = [["Fino", 0.008], ["Médio", 0.016], ["Grosso", 0.034]];
+
+/** Traços em elementos <path> de SVG, numa área de W x H unidades. */
+function strokesToSVG(strokes, W, H) {
+  return `<g fill="none" stroke-linecap="round" stroke-linejoin="round">` + strokes.map((s) => {
+    const pts = s.p.map(([x, y]) => `${(x * W).toFixed(1)} ${(y * H).toFixed(1)}`);
+    const d = pts.length === 1 ? `M${pts[0]}l.01 0` : "M" + pts.join("L");
+    return `<path d="${d}" stroke="${s.c}" stroke-width="${(s.w * W).toFixed(2)}"/>`;
+  }).join("") + "</g>";
+}
+
+/** Pinta os traços num canvas 2D (ecrã e exportação para PNG usam o mesmo código). */
+function paintStrokes(ctx, strokes, W, H) {
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+  strokes.forEach((s) => {
+    ctx.strokeStyle = s.c;
+    ctx.lineWidth = s.w * W;
+    ctx.beginPath();
+    s.p.forEach(([x, y], i) => (i ? ctx.lineTo(x * W, y * H) : ctx.moveTo(x * W, y * H)));
+    if (s.p.length === 1) ctx.lineTo(s.p[0][0] * W + 0.01, s.p[0][1] * H);
+    ctx.stroke();
+  });
+}
+
+/** PNG com fundo transparente, a 1500 px de largura (≈ 250 ppp numa página A5). */
+function drawingToPNG(d, strokes) {
+  const W = 1500, H = Math.round(W / d.aspect);
+  const c = document.createElement("canvas");
+  c.width = W;
+  c.height = H;
+  paintStrokes(c.getContext("2d"), strokes, W, H);
+  return c.toDataURL("image/png");
+}
+
+/** Envia o PNG para o Cloudinary (grátis) e devolve o link. Devolve null se não estiver configurado. */
+async function uploadDrawing(dataUrl) {
+  const { cloudName, uploadPreset } = CONFIG.upload;
+  if (!cloudName || !uploadPreset) return null;
+  const body = new FormData();
+  body.append("file", dataUrl);
+  body.append("upload_preset", uploadPreset);
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, { method: "POST", body });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || !data.secure_url) throw new Error("Falha ao enviar o desenho");
+  return data.secure_url;
+}
+
+const dlg = $("#dlg-draw");
+const canvas = $("#draw-canvas");
+const g2d = canvas.getContext("2d");
+const pen = { slot: null, strokes: [], tool: "pen", color: PEN_COLORS[1][1], width: PEN_WIDTHS[1][1], cur: null, erasing: false };
+
+function redrawCanvas() {
+  g2d.clearRect(0, 0, canvas.width, canvas.height);
+  paintStrokes(g2d, pen.strokes, canvas.width, canvas.height);
+}
+function sizeCanvas() {
+  const r = canvas.getBoundingClientRect();
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = Math.max(1, Math.round(r.width * dpr));
+  canvas.height = Math.max(1, Math.round(r.height * dpr));
+  redrawCanvas();
+}
+const canvasPoint = (e) => {
+  const r = canvas.getBoundingClientRect();
+  const n = (v) => Math.round(Math.min(1, Math.max(0, v)) * 1000) / 1000;
+  return [n((e.clientX - r.left) / r.width), n((e.clientY - r.top) / r.height)];
+};
+/** Borracha: apaga os traços que passam perto do ponto (raio de 14 px). */
+function eraseAt([x, y]) {
+  const r = canvas.getBoundingClientRect();
+  const before = pen.strokes.length;
+  pen.strokes = pen.strokes.filter((s) => !s.p.some(([a, b]) => Math.hypot((a - x) * r.width, (b - y) * r.height) < 14));
+  if (pen.strokes.length !== before) redrawCanvas();
+}
+
+function openDraw(id) {
+  const d = byId(CONFIG.drawings, id);
+  const cover = d.needs === "cover";
+  const bg = cover ? byId(CONFIG.colors, state.color).hex : "#FFFFFF";
+  pen.slot = id;
+  pen.strokes = clone((drawingOf(state, id) || { strokes: [] }).strokes);
+  pen.cur = null;
+  const stage = $("#draw-stage");
+  stage.style.setProperty("--aspect", d.aspect);
+  stage.style.setProperty("--stage-bg", bg);
+  stage.style.setProperty("--guide", onColor(bg));
+  stage.dataset.kind = cover ? "cover" : "page";
+  $("#dlg-draw-t").textContent = d.label;
+  $("#draw-help").textContent = d.help;
+  // cor inicial legível sobre o fundo
+  const first = onColor(bg) === PAPER ? PEN_COLORS[0][1] : PEN_COLORS[1][1];
+  pen.color = first;
+  pen.tool = "pen";
+  $$('#dlg-draw input[name="tool"]').forEach((i) => (i.checked = i.value === "pen"));
+  $$('#dlg-draw input[name="pcolor"]').forEach((i) => (i.checked = i.value === first));
+  dlg.showModal();
+  requestAnimationFrame(sizeCanvas);
+}
+
+function buildPenControls() {
+  $("#pen-colors").insertAdjacentHTML("beforeend", PEN_COLORS.map(([name, hex], i) => `
+    <label class="pcolor" title="${name}"><input type="radio" name="pcolor" value="${hex}"${i === 1 ? " checked" : ""} aria-label="${name}"><span style="--c:${hex}"></span></label>`).join(""));
+  $("#pen-widths").insertAdjacentHTML("beforeend", PEN_WIDTHS.map(([name, w], i) => `
+    <label class="chip"><input type="radio" name="pwidth" value="${w}"${i === 1 ? " checked" : ""}><span>${name}</span></label>`).join(""));
+}
+
+canvas.addEventListener("pointerdown", (e) => {
+  if (e.button > 0) return;
+  e.preventDefault();
+  canvas.setPointerCapture(e.pointerId);
+  const p = canvasPoint(e);
+  if (pen.tool === "eraser") {
+    pen.erasing = true;
+    eraseAt(p);
+  } else {
+    pen.cur = { c: pen.color, w: pen.width, p: [p] };
+    pen.strokes.push(pen.cur);
+    redrawCanvas();
+  }
+});
+canvas.addEventListener("pointermove", (e) => {
+  if (!pen.cur && !pen.erasing) return;
+  const list = e.getCoalescedEvents ? e.getCoalescedEvents() : [];
+  const r = canvas.getBoundingClientRect();
+  for (const ev of list.length ? list : [e]) {
+    const p = canvasPoint(ev);
+    if (pen.erasing) { eraseAt(p); continue; }
+    const last = pen.cur.p[pen.cur.p.length - 1];
+    if (Math.hypot((p[0] - last[0]) * r.width, (p[1] - last[1]) * r.height) >= 1.5) pen.cur.p.push(p);
+  }
+  if (pen.cur) redrawCanvas();
+});
+["pointerup", "pointercancel"].forEach((t) => canvas.addEventListener(t, () => { pen.cur = null; pen.erasing = false; }));
+window.addEventListener("resize", () => { if (dlg.open) sizeCanvas(); });
+
+dlg.addEventListener("change", (e) => {
+  const { name, value } = e.target;
+  if (name === "tool") pen.tool = value;
+  if (name === "pcolor") { pen.color = value; pen.tool = "pen"; $$('#dlg-draw input[name="tool"]').forEach((i) => (i.checked = i.value === "pen")); }
+  if (name === "pwidth") pen.width = Number(value);
+});
+$("#draw-undo").addEventListener("click", () => { pen.strokes.pop(); redrawCanvas(); });
+$("#draw-clear").addEventListener("click", () => { pen.strokes = []; redrawCanvas(); });
+$("#draw-cancel").addEventListener("click", () => dlg.close());
+$("#draw-save").addEventListener("click", () => {
+  const slot = pen.slot;
+  const strokes = pen.strokes.filter((s) => s.p.length);
+  dlg.close();
+  set({ drawings: { ...state.drawings, [slot]: strokes.length ? { strokes } : null } });
+  const back = $(`[data-draw="${slot}"]`);
+  if (back) back.focus();
+});
+
+/** Lista "Desenha à mão" no construtor: só mostra o que se aplica ao pedido atual. */
+function renderDraws() {
+  const rows = CONFIG.drawings.filter((d) => drawingAvailable(state, d));
+  $("#step-draw").hidden = rows.length === 0;
+  $("#draws").innerHTML = rows.map((d) => {
+    const dr = drawingOf(state, d.id);
+    const cover = d.needs === "cover";
+    const W = cover ? 250 : 148, H = Math.round(W / d.aspect);
+    const bg = cover ? byId(CONFIG.colors, state.color).hex : "#FFFFFF";
+    const thumb = dr
+      ? `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(d.label)}: guardado"><rect width="${W}" height="${H}" fill="${bg}"/>${strokesToSVG(dr.strokes, W, H)}</svg>`
+      : `<svg class="draw__empty" viewBox="0 0 24 24" aria-hidden="true"><use href="#pencil"/></svg>`;
+    return `
+      <li class="draw${cover ? " draw--cover" : ""}" data-id="${d.id}">
+        <div class="draw__thumb">${thumb}</div>
+        <div class="draw__text"><strong>${d.label}</strong><span class="opt__desc">${d.help}</span></div>
+        <div class="draw__btns">
+          <span class="opt__price">${d.price ? "+" + money(d.price) : "incluído"}</span>
+          <button type="button" class="btn btn--line" data-draw="${d.id}">${dr ? "Refazer" : "Desenhar"}<span class="sr"> ${esc(d.label.toLowerCase())}</span></button>
+          ${dr ? `<button type="button" class="link" data-draw-clear="${d.id}">Apagar<span class="sr"> ${esc(d.label.toLowerCase())}</span></button>` : ""}
+        </div>
+      </li>`;
+  }).join("");
 }
 
 /* ==========================================================================
@@ -339,6 +564,7 @@ function render() {
     b.hidden = Boolean(refill && b.dataset.kind === "finish" && f.coverOnly);
   });
 
+  renderDraws();
   previewAgenda.update(state);
   $("#preview-spec").textContent = `${refill ? "Recarga" : color.label} · A5 · 6 argolas`;
   $("#preview-period").textContent = `12 meses · ${period(state)}`;
@@ -376,7 +602,16 @@ function toggle(list, id) {
 els.grid.addEventListener("click", (e) => {
   const opt = e.target.closest(".opt");
   const mode = e.target.closest(".mode__btn");
-  if (opt) {
+  const open = e.target.closest("[data-draw]");
+  const wipe = e.target.closest("[data-draw-clear]");
+  if (open) {
+    openDraw(open.dataset.draw);
+  } else if (wipe) {
+    const id = wipe.dataset.drawClear;
+    set({ drawings: { ...state.drawings, [id]: null } });
+    const back = $(`[data-draw="${id}"]`);
+    if (back) back.focus();
+  } else if (opt) {
     const key = opt.dataset.kind === "module" ? "modules" : "finishes";
     set({ [key]: toggle(state[key], opt.dataset.id) });
   } else if (mode) {
@@ -409,6 +644,15 @@ document.addEventListener("click", (e) => {
   showPanel("steps");
   goBuilder();
 });
+
+/** Na confirmação: ligações para a cliente guardar os desenhos (e no-los enviar, se o link automático não estiver ligado). */
+function showDownloads(files) {
+  const box = $("#done-draws");
+  const items = CONFIG.drawings.filter((d) => files[d.id]);
+  box.hidden = items.length === 0;
+  $("#done-draws-list").innerHTML = items.map((d) =>
+    `<li><a class="btn btn--line" href="${files[d.id]}" download="bica-a-bica-${d.id}.png">Descarregar: ${d.label.toLowerCase()}</a></li>`).join("");
+}
 
 /* ---------- Formulário ---------- */
 const FIELDS = {
@@ -463,9 +707,16 @@ form.addEventListener("submit", async (e) => {
   send.textContent = "A enviar…";
   $("#form-status").textContent = "";
   try {
-    const order = { customer: data, text: buildOrderText(state, data), botcheck: $("#f-botcheck").checked };
+    // Desenhos: PNG para imprimir; se o alojamento estiver configurado, o email leva o link (se falhar, o pedido segue na mesma).
+    const files = {}, links = {};
+    await Promise.all(activeDrawings(state).map(async (d) => {
+      files[d.id] = drawingToPNG(d, drawingOf(state, d.id).strokes);
+      links[d.id] = await uploadDrawing(files[d.id]).catch(() => null);
+    }));
+    const order = { customer: data, text: buildOrderText(state, data, links), botcheck: $("#f-botcheck").checked };
     await submitOrder(order);
     $("#order-text").textContent = order.text;
+    showDownloads(files);
     showPanel("done", true);
   } catch {
     $("#form-status").textContent = "Não foi possível enviar o pedido. Tenta outra vez dentro de instantes.";
@@ -500,7 +751,7 @@ function startHero() {
     { color: "florida", name: "",        modules: ["mensal", "semanal", "notas"] },
     { color: "azulejo", name: "Marta",   modules: ["mensal", "semanal", "notas", "habitos"] },
     { color: "caqui",   name: "",        modules: ["mensal", "diario", "financas", "notas"] },
-    { color: "salva",   name: "Atelier", modules: ["mensal", "semanal", "leituras"] },
+    { color: "salva",   name: "Inês", modules: ["mensal", "semanal", "leituras"] },
     { color: "cafe",    name: "",        modules: CONFIG.modules.map((m) => m.id) },
   ];
   let view = { ...clone(CONFIG.base), ...frames[0] };
@@ -524,6 +775,7 @@ function startHero() {
 }
 
 buildControls();
+buildPenControls();
 fillConfigValues();
 render();
 startHero();

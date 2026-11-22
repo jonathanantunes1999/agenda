@@ -328,6 +328,42 @@ input[aria-invalid="true"] { border-color: #A8200A; border-width: 2.5px; }
 .footer__credit { font-size: 0.9375rem; color: var(--muted); }
 .footer__credit a { color: var(--ink); font-weight: 600; }
 
+/* ---------- Desenho à mão ---------- */
+.sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.agenda .art { transition: opacity .3s; }
+.agenda.is-refill .art { opacity: 0; }
+.draws { display: grid; gap: 10px; }
+.draw { display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; padding: 12px; border: 1.5px solid var(--ink); border-radius: 16px; background: var(--paper); }
+.draw__thumb { display: grid; place-items: center; width: 132px; height: 64px; background: var(--soft); border-radius: 10px; overflow: hidden; }
+.draw--cover .draw__thumb { width: 64px; height: 104px; }
+.draw__thumb svg { max-width: 100%; max-height: 100%; display: block; }
+.draw__empty { width: 34px; height: 34px; fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.draw__text { display: grid; gap: 2px; min-width: 0; }
+.draw__btns { display: grid; justify-items: end; gap: 4px; }
+.draw__btns .btn { min-height: 44px; padding: 0 18px; }
+.downloads { display: grid; gap: 8px; justify-items: start; margin: 10px 0 18px; }
+
+dialog { border: 1.5px solid var(--ink); border-radius: var(--radius); background: var(--paper); color: var(--ink); padding: 20px; }
+dialog::backdrop { background: rgba(47, 74, 60, .6); }
+.draw-dlg { width: min(96vw, 600px); max-height: 94vh; overflow: auto; }
+.draw-dlg[open] { display: grid; grid-auto-rows: max-content; align-content: start; gap: 12px; }
+.draw-dlg h3 { font-size: 2.2rem; }
+.draw__stage { position: relative; justify-self: center; align-self: start; width: min(100%, calc(min(46vh, 460px) * var(--aspect, .56))); aspect-ratio: var(--aspect, .56); background: var(--stage-bg, #fff); border: 1.5px solid var(--ink); border-radius: 12px; overflow: hidden; }
+.draw__stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: crosshair; }
+.draw__guide { position: absolute; left: 19.2%; top: 34.1%; width: 67.2%; height: 24.2%; border: 2px dashed var(--guide, #888); border-radius: 10px; display: grid; place-items: center; pointer-events: none; color: var(--guide, #888); font: 700 1.1rem/1 var(--font-display); opacity: .85; }
+.draw__stage[data-kind="page"] .draw__guide { display: none; }
+.draw__tools { display: grid; gap: 8px; }
+.tools-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; border: 0; padding: 0; margin: 0; min-width: 0; }
+.chip, .pcolor { position: relative; display: inline-grid; }
+.chip input, .pcolor input { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.chip span { display: grid; place-items: center; min-height: 44px; padding: 0 16px; border: 1.5px solid var(--ink); border-radius: 999px; font-weight: 600; }
+.chip input:checked + span { background: var(--ink); color: var(--paper); }
+.pcolor { width: 44px; height: 44px; }
+.pcolor span { width: 32px; height: 32px; margin: 6px; border-radius: 50%; background: var(--c); border: 1.5px solid var(--ink); }
+.pcolor input:checked + span { box-shadow: 0 0 0 3px var(--paper), 0 0 0 5px var(--ink); }
+.chip input:focus-visible + span, .pcolor input:focus-visible + span { outline: 3px solid var(--focus); outline-offset: 3px; }
+.draw__actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: flex-end; position: sticky; bottom: -20px; margin: 0 -20px -20px; padding: 12px 20px 20px; background: var(--paper); border-top: 1px solid rgba(47, 74, 60, .18); }
+
 /* ---------- Página de texto legal ---------- */
 .doc { max-width: 780px; margin-inline: auto; padding-block: clamp(40px, 6vw, 80px); }
 .doc h1 { font-size: clamp(3.4rem, 9vw, 5.6rem); margin: 14px 0 8px; }
@@ -388,6 +424,13 @@ input[aria-invalid="true"] { border-color: #A8200A; border-width: 2.5px; }
   .tag { padding: 0 14px; font-size: 1.3rem; }
   .swap__arrow { width: 20px; flex: none; }
   .nav__in { gap: 10px; }
+  .draw-dlg { padding: 16px; }
+  .draw__actions { flex-wrap: nowrap; bottom: -16px; margin: 0 -16px -16px; padding: 10px 16px 16px; }
+  .draw__actions .btn { flex: 1; padding: 0 10px; }
+  .draw__stage { width: min(100%, calc(min(36vh, 460px) * var(--aspect, .56))); }
+  .draw { grid-template-columns: auto 1fr; }
+  .draw__btns { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+  .draw__btns .opt__price { order: -1; margin-right: auto; }
 }
 @media (max-width: 380px) {
   .swap__row { flex-wrap: wrap; }
