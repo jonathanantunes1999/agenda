@@ -238,6 +238,7 @@ function buildOrderText(s, c) {
     `  Cód. postal: ${c.codpostal}  ${c.localidade}`,
     `  Notas:      ${c.notas || "-"}`,
     "",
+    "ACEITES pela cliente: Termos e condições, Política de privacidade e ausência de livre resolução (14 dias) em produtos personalizados.",
     "PAGAMENTO: MB Way ou transferência. Enviar dados por email; iniciar produção só quando o pagamento entrar.",
   ].join("\n");
 }
@@ -415,6 +416,7 @@ const FIELDS = {
   morada: { empty: "Indica a morada (rua e número)." },
   codpostal: { empty: "Indica o código postal.", ok: (v) => /^\d{4}-\d{3}$/.test(v), bad: "Usa o formato 0000-000." },
   localidade: { empty: "Indica a localidade." },
+  aceito: { empty: "Para enviares o pedido tens de aceitar os termos e condições." },
 };
 
 function fieldError(name, value) {
@@ -432,12 +434,14 @@ function setError(name, msg) {
 const form = $("#order-form");
 form.addEventListener("input", (e) => {
   const name = e.target.name;
-  if (FIELDS[name] && e.target.hasAttribute("aria-invalid")) setError(name, fieldError(name, e.target.value.trim()));
+  const value = e.target.type === "checkbox" ? (e.target.checked ? "sim" : "") : e.target.value.trim();
+  if (FIELDS[name] && e.target.hasAttribute("aria-invalid")) setError(name, fieldError(name, value));
 });
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const data = Object.fromEntries(new FormData(form).entries());
   Object.keys(data).forEach((k) => (data[k] = String(data[k]).trim()));
+  data.aceito = $("#f-aceito").checked ? "sim" : "";
   const errors = Object.keys(FIELDS).filter((n) => { const m = fieldError(n, data[n]); setError(n, m); return m; });
 
   const summary = $("#form-errors");
@@ -465,7 +469,7 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
-/* ---------- Nav, diálogos e valores ligados à configuração ---------- */
+/* ---------- Nav e valores ligados à configuração ---------- */
 const toggleBtn = $(".nav__toggle");
 const navLinks = $("#nav-links");
 toggleBtn.addEventListener("click", () => {
@@ -474,8 +478,6 @@ toggleBtn.addEventListener("click", () => {
   navLinks.classList.toggle("is-open", open);
 });
 navLinks.addEventListener("click", () => { toggleBtn.setAttribute("aria-expanded", "false"); navLinks.classList.remove("is-open"); });
-
-$$("[data-dialog]").forEach((b) => b.addEventListener("click", () => $(`#${b.dataset.dialog}`).showModal()));
 
 function fillConfigValues() {
   const refillBase = quote({ ...clone(CONFIG.base), mode: "recarga" }).total;
