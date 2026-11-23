@@ -332,6 +332,12 @@ input[aria-invalid="true"] { border-color: #A8200A; border-width: 2.5px; }
 .footer__credit { font-size: 0.9375rem; color: var(--muted); }
 .footer__credit a { color: var(--ink); font-weight: 600; }
 
+/* ---------- Módulos incluídos e seletor de ano ---------- */
+.incl { display: grid; gap: 8px; padding: 14px 16px; background: var(--bg); border-radius: 16px; }
+.incl__item { display: flex; align-items: center; gap: 12px; }
+.incl__item .opt__desc { display: block; }
+.months--years { grid-template-columns: repeat(2, minmax(0, 120px)); }
+
 /* ---------- Desenho à mão ---------- */
 .sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 .agenda .art { transition: opacity .3s; }

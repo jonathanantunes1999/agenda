@@ -4,9 +4,15 @@
    CONFIGURAÇÃO — único sítio a editar por cliente (preços, módulos, cores).
    ========================================================================== */
 const CONFIG = {
-  year: 2027,
+  // Preços em euros, IVA incluído (preçário Bica a Bica). Total = tipo de agenda + extras escolhidos.
+  // O ano e o mês de início não mexem no preço: são sempre 12 meses.
+  years: [2027, 2028],
   nameMax: 18,
-  cover: { price: 24, engravePrice: 4 },
+  types: {
+    agenda:  { label: "Agenda completa",    price: 29.9 },   // capa dura A5, 6 argolas, mensal, semanal e notas
+    recarga: { label: "Só recarga (miolo)", price: 24.9 },   // mensal, semanal e notas, sem capa
+  },
+  cover: { engravePrice: 3 },
   months: [
     ["Jan", "janeiro"], ["Fev", "fevereiro"], ["Mar", "março"], ["Abr", "abril"],
     ["Mai", "maio"], ["Jun", "junho"], ["Jul", "julho"], ["Ago", "agosto"],
@@ -23,30 +29,31 @@ const CONFIG = {
     { id: "po",      label: "Pó",      hex: "#ABBBC7" },
   ],
   modules: [
-    { id: "mensal",   label: "Vista mensal",     tab: "mês", price: 6,  color: "#3E5F8A", desc: "Um mês em duas páginas, para ver o quadro geral." },
-    { id: "semanal",  label: "Semanal",          tab: "sem", price: 9,  color: "#C9B99A", desc: "Sete dias por dupla de páginas, com espaço para escrever." },
-    { id: "diario",   label: "Diário",           tab: "dia", price: 14, color: "#4A3426", desc: "Uma página por dia, para quem escreve muito." },
-    { id: "notas",    label: "Notas pontilhadas", tab: "not", price: 4,  color: "#A9B79C", desc: "Folhas pontilhadas livres para listas, esboços e ideias." },
-    { id: "habitos",  label: "Tracker de hábitos", tab: "háb", price: 4, color: "#ABBBC7", desc: "Grelha mensal para marcar o que repetes todos os dias." },
-    { id: "financas", label: "Finanças",         tab: "fin", price: 4,  color: "#2F4A3C", desc: "Registo de despesas e orçamento mês a mês." },
-    { id: "leituras", label: "Leituras",         tab: "lei", price: 3,  color: "#7F6048", desc: "Lista do que lês, com espaço para notas." },
+    // "included": já vem no preço da agenda (nos dois tipos), por isso não se escolhe nem se paga à parte.
+    { id: "mensal",   label: "Vista mensal",      tab: "mês", included: true, color: "#3E5F8A", desc: "Um mês em duas páginas, para ver o quadro geral." },
+    { id: "semanal",  label: "Semanal",           tab: "sem", included: true, color: "#C9B99A", desc: "Sete dias por dupla de páginas, com espaço para escrever." },
+    { id: "diario",   label: "Diário",            tab: "dia", price: 49,  color: "#4A3426", desc: "Uma página por dia, com marcações." },
+    { id: "notas",    label: "Notas pontilhadas", tab: "not", included: true, color: "#A9B79C", desc: "Folhas pontilhadas livres para listas, esboços e ideias." },
+    { id: "habitos",  label: "Tracker de hábitos", tab: "háb", price: 2,  color: "#ABBBC7", desc: "Grelha mensal para marcar o que repetes todos os dias." },
+    { id: "financas", label: "Finanças",          tab: "fin", price: 2,  color: "#2F4A3C", desc: "Registo de despesas e orçamento mês a mês." },
+    { id: "leituras", label: "Leituras",          tab: "lei", price: 1.5, color: "#7F6048", desc: "Lista do que lês, com espaço para notas." },
   ],
   finishes: [
-    { id: "separadores", label: "Separadores impressos", price: 3, desc: "Folhas de separação com o nome de cada módulo." },
-    { id: "caneta",      label: "Suporte de caneta",     price: 2, desc: "Passador na capa para guardares a tua caneta.", coverOnly: true },
-    { id: "bolsa",       label: "Bolsa transparente",    price: 3, desc: "Para guardar papéis soltos e cartões." },
-    { id: "stickers",    label: "Folha de stickers",     price: 4, desc: "Chávenas, corações, laços e etiquetas como \"to-do\" e \"compras\"." },
+    { id: "separadores", label: "Separadores de cartolina", price: 2, desc: "Um por módulo e por mês." },
+    { id: "caneta",      label: "Suporte de caneta",        price: 2, desc: "Passador na capa para guardares a tua caneta.", coverOnly: true },
+    { id: "bolsa",       label: "Bolsa transparente com fecho", price: 2, desc: "Para guardar papéis soltos e cartões." },
+    { id: "stickers",    label: "Folha de stickers",        price: 3, desc: "Chávenas, corações, laços e etiquetas como \"to-do\" e \"compras\"." },
   ],
+  // Conjuntos: só os extras (mensal, semanal e notas já vêm sempre).
   sets: [
-    { id: "essencial", label: "Essencial", modules: ["mensal", "notas"], finishes: [] },
-    { id: "organizada", label: "Organizada", modules: ["mensal", "semanal", "notas"], finishes: ["separadores"] },
-    { id: "completa", label: "Completa", modules: ["mensal", "semanal", "habitos", "financas", "notas"], finishes: ["separadores", "caneta"] },
+    { id: "essencial", label: "Essencial", modules: [], finishes: [] },
+    { id: "organizada", label: "Organizada", modules: [], finishes: ["separadores"] },
+    { id: "completa", label: "Completa", modules: ["habitos", "financas"], finishes: ["separadores", "caneta"] },
   ],
   // Desenhos à mão da cliente. "needs": onde se aplica (a capa ou um módulo). "aspect" = largura / altura da área.
   drawings: [
-    { id: "capa",    label: "Desenho na capa",           price: 5, aspect: 250 / 446, needs: "cover",   help: "Desenha na capa. A etiqueta do ano fica ao centro, por cima do desenho." },
-    { id: "diario",  label: "Desenho no topo do diário", price: 3, aspect: 148 / 40,  needs: "diario",  help: "Este desenho repete-se no cimo de todas as páginas do diário." },
-    { id: "semanal", label: "Desenho no topo do semanal", price: 3, aspect: 148 / 40, needs: "semanal", help: "Este desenho repete-se no cimo de todas as páginas do semanal." },
+    { id: "capa",    label: "Desenho na capa",            price: 4, aspect: 250 / 446, needs: "cover",   help: "Desenha na capa. A etiqueta do ano fica ao centro, por cima do desenho." },
+    { id: "semanal", label: "Desenho no topo do semanal", price: 2, aspect: 148 / 40,  needs: "semanal", help: "Este desenho repete-se no cimo de todas as páginas do semanal." },
   ],
   // Alojamento de imagens grátis (Cloudinary, upload sem assinatura): o email do pedido leva o link do desenho.
   // Sem estes dois valores o desenho não é enviado; a cliente descarrega-o no fim do pedido.
@@ -54,7 +61,7 @@ const CONFIG = {
   // Pedidos por email via Web3Forms (web3forms.com). Cola aqui a "Access Key" do cliente.
   // Com a chave vazia o envio é só simulado (útil para demos).
   orders: { accessKey: "5d6722e8-49a0-4b9b-988f-6f8cf4d0568d", subject: "Novo pedido bica a bica" },
-  base: { mode: "agenda", color: "florida", name: "", start: 0, modules: ["mensal", "semanal", "notas"], finishes: [], drawings: { capa: null, diario: null, semanal: null } },
+  base: { mode: "agenda", color: "florida", name: "", year: 2027, start: 0, modules: ["mensal", "semanal", "notas"], finishes: [], drawings: { capa: null, semanal: null } },
 };
 
 /* ==========================================================================
@@ -62,7 +69,10 @@ const CONFIG = {
    ========================================================================== */
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
-const money = (n) => `${n} €`;
+const money = (n) => `${n.toLocaleString("pt-PT", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}\u00a0€`;
+const priceText = (n) => (n ? money(n) : "incluído");
+/** Módulos que já vêm no preço da agenda, e a lista de ids com eles sempre presentes. */
+const withIncluded = (ids) => CONFIG.modules.filter((m) => m.included || ids.includes(m.id)).map((m) => m.id);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const reduceMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 const byId = (list, id) => list.find((x) => x.id === id);
@@ -107,8 +117,9 @@ function sanitize(p) {
     mode: p.mode === "recarga" ? "recarga" : "agenda",
     color: byId(CONFIG.colors, p.color) ? p.color : d.color,
     name: typeof p.name === "string" ? p.name.slice(0, CONFIG.nameMax) : "",
+    year: CONFIG.years.includes(p.year) ? p.year : d.year,
     start: Number.isInteger(p.start) && p.start >= 0 && p.start < 12 ? p.start : 0,
-    modules: ids(CONFIG.modules, p.modules),
+    modules: withIncluded(ids(CONFIG.modules, p.modules)),
     finishes: ids(CONFIG.finishes, p.finishes),
     drawings: Object.fromEntries(CONFIG.drawings.map((x) => [x.id, cleanDrawing(p.drawings && p.drawings[x.id])])),
   };
@@ -123,19 +134,20 @@ function save() {
 
 const isRefill = (s) => s.mode === "recarga";
 
-/** Linhas de preço e total para um estado. Em recarga não há capa, nome nem suporte de caneta. */
+/**
+ * Linhas de preço e total para um estado: tipo de agenda + extras. Os módulos incluídos aparecem a 0 (para a produção).
+ * Em recarga não há capa, nome nem suporte de caneta. O total soma-se em cêntimos para evitar erros de arredondamento.
+ */
 function quote(s) {
-  const lines = [];
-  if (!isRefill(s)) {
-    lines.push({ label: `Capa dura · ${byId(CONFIG.colors, s.color).label}`, price: CONFIG.cover.price });
-    if (s.name.trim()) lines.push({ label: `Nome gravado: ${s.name.trim()}`, price: CONFIG.cover.engravePrice });
-  }
-  CONFIG.modules.filter((m) => s.modules.includes(m.id)).forEach((m) => lines.push({ label: m.label, price: m.price }));
+  const type = CONFIG.types[isRefill(s) ? "recarga" : "agenda"];
+  const lines = [{ label: isRefill(s) ? type.label : `${type.label} · ${byId(CONFIG.colors, s.color).label}`, price: type.price }];
+  if (!isRefill(s) && s.name.trim()) lines.push({ label: `Nome gravado: ${s.name.trim()}`, price: CONFIG.cover.engravePrice });
+  CONFIG.modules.filter((m) => s.modules.includes(m.id)).forEach((m) => lines.push({ label: m.label, price: m.included ? 0 : m.price }));
   CONFIG.finishes
     .filter((f) => s.finishes.includes(f.id) && !(isRefill(s) && f.coverOnly))
     .forEach((f) => lines.push({ label: f.label, price: f.price }));
   activeDrawings(s).filter((d) => d.price).forEach((d) => lines.push({ label: d.label, price: d.price }));
-  return { lines, total: lines.reduce((t, l) => t + l.price, 0) };
+  return { lines, total: lines.reduce((t, l) => t + Math.round(l.price * 100), 0) / 100 };
 }
 
 /* Desenhos: só contam se o sítio onde se aplicam existir (capa fora da recarga; topo só com o módulo escolhido). */
@@ -145,8 +157,8 @@ const activeDrawings = (s) => CONFIG.drawings.filter((d) => drawingAvailable(s, 
 
 function period(s) {
   const end = (s.start + 11) % 12;
-  const endYear = CONFIG.year + (s.start > 0 ? 1 : 0);
-  return `${CONFIG.months[s.start][0]} ${CONFIG.year} a ${CONFIG.months[end][0]} ${endYear}`;
+  const endYear = s.year + (s.start > 0 ? 1 : 0);
+  return `${CONFIG.months[s.start][0]} ${s.year} a ${CONFIG.months[end][0]} ${endYear}`;
 }
 
 /* ==========================================================================
@@ -205,7 +217,7 @@ function createAgenda(host) {
       <path class="crease" d="M96 41V493"/>
       <g class="plaque">
         <rect x="148" y="196" width="168" height="108" rx="12"/><rect x="156" y="204" width="152" height="92" rx="7"/>
-        <text x="232" y="258" text-anchor="middle">${CONFIG.year}</text>
+        <text x="232" y="258" text-anchor="middle">${CONFIG.base.year}</text>
         <use href="#heart" x="219" y="266" width="26" height="26"/>
       </g>
       <text class="refill-label" x="226" y="278" text-anchor="middle">a tua capa</text>
@@ -241,6 +253,7 @@ function createAgenda(host) {
       svg.classList.toggle("is-refill", refill);
       $(".flowers", svg).classList.toggle("on", c.pattern === "flowers");
       $(".tiles", svg).classList.toggle("on", c.pattern === "azulejo");
+      $(".plaque text", svg).textContent = s.year;
       const art = drawingOf(s, "capa");
       artEl.innerHTML = art ? strokesToSVG(art.strokes, 250, 446) : "";
 
@@ -277,13 +290,13 @@ function buildOrderText(s, c, links = {}) {
   const arts = activeDrawings(s);
   const refill = isRefill(s);
   const color = byId(CONFIG.colors, s.color);
-  const rows = q.lines.map((l) => `  ${l.label.padEnd(36, ".")} ${money(l.price)}`);
+  const rows = q.lines.map((l) => `  ${l.label.padEnd(36, ".")} ${priceText(l.price)}`);
   return [
     `PEDIDO BICA A BICA · ${new Date().toLocaleString("pt-PT")}`,
     "=".repeat(48),
     refill ? "TIPO:   Só recarga (miolo A5 para 6 argolas, sem capa)" : "TIPO:   Agenda completa (capa dura A5, 6 argolas)",
     ...(refill ? [] : [`CAPA:   ${color.label} (${color.hex})`, `NOME:   ${s.name.trim() || "(sem gravação)"}`]),
-    `INÍCIO: ${CONFIG.months[s.start][1]} de ${CONFIG.year} (12 meses: ${period(s)})`,
+    `INÍCIO: ${CONFIG.months[s.start][1]} de ${s.year} (12 meses: ${period(s)})`,
     "",
     "ITENS",
     ...rows,
@@ -536,22 +549,28 @@ function buildControls() {
   $("#colors").innerHTML = CONFIG.colors.map((c) => `
     <label class="swatch"><input type="radio" name="color" value="${c.id}">
       <span class="swatch__dot${c.pattern ? " swatch__dot--" + c.pattern : ""}" style="--c:${c.hex}"></span><span class="swatch__name">${c.label}</span></label>`).join("");
+  $("#years").innerHTML = CONFIG.years.map((y) => `
+    <label class="month"><input type="radio" name="year" value="${y}"><span>${y}</span></label>`).join("");
   $("#months").innerHTML = CONFIG.months.map((m, i) => `
     <label class="month"><input type="radio" name="start" value="${i}"><span>${m[0]}</span></label>`).join("");
   const opt = (kind, x) => `
     <button type="button" class="opt" data-kind="${kind}" data-id="${x.id}" aria-pressed="false" style="--tab:${x.color || "transparent"}">
       ${x.color ? '<span class="opt__tab" aria-hidden="true"></span>' : ""}
       <span class="opt__text"><span class="opt__name">${x.label}</span><span class="opt__desc">${x.desc}</span></span>
-      <span class="opt__price">${money(x.price)}</span>
+      <span class="opt__price">+${money(x.price)}</span>
     </button>`;
-  $("#modules").innerHTML = CONFIG.modules.map((m) => opt("module", m)).join("");
+  // Os módulos incluídos mostram-se à parte (já vêm no preço); só os extras se escolhem.
+  $("#included").innerHTML = CONFIG.modules.filter((m) => m.included).map((m) =>
+    `<li class="incl__item"><span class="set__tab" style="--tab:${m.color}" aria-hidden="true"></span><span><strong>${m.label}</strong> <span class="opt__desc">${m.desc}</span></span></li>`).join("");
+  $("#modules").innerHTML = CONFIG.modules.filter((m) => !m.included).map((m) => opt("module", m)).join("");
   $("#finishes").innerHTML = CONFIG.finishes.map((f) => opt("finish", f)).join("");
   $("#engrave").maxLength = CONFIG.nameMax;
 
   $("#sets").innerHTML = CONFIG.sets.map((set) => {
-    const mods = CONFIG.modules.filter((m) => set.modules.includes(m.id));
+    const ids = withIncluded(set.modules);
+    const mods = CONFIG.modules.filter((m) => ids.includes(m.id));
     const fins = CONFIG.finishes.filter((f) => set.finishes.includes(f.id));
-    const total = quote({ ...clone(CONFIG.base), modules: set.modules, finishes: set.finishes }).total;
+    const total = quote({ ...clone(CONFIG.base), modules: ids, finishes: set.finishes }).total;
     return `
       <article class="set sheet">
         <h3>${set.label}</h3>
@@ -573,6 +592,7 @@ function render() {
   $$(".mode__btn").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.mode === state.mode)));
   $("#step-cover").hidden = refill;
   $$('input[name="color"]').forEach((i) => (i.checked = i.value === state.color));
+  $$('input[name="year"]').forEach((i) => (i.checked = Number(i.value) === state.year));
   $$('input[name="start"]').forEach((i) => (i.checked = Number(i.value) === state.start));
   if ($("#engrave").value !== state.name) $("#engrave").value = state.name;
   $$(".opt").forEach((b) => {
@@ -586,15 +606,10 @@ function render() {
   previewAgenda.update(state);
   $("#preview-spec").textContent = `${refill ? "Recarga" : color.label} · A5 · 6 argolas`;
   $("#preview-period").textContent = `12 meses · ${period(state)}`;
-  const linesHTML = q.lines.map((l) => `<li><span>${esc(l.label)}</span><span>${money(l.price)}</span></li>`).join("")
-    || '<li class="lines__empty">Ainda sem módulos.</li>';
+  const linesHTML = q.lines.map((l) => `<li><span>${esc(l.label)}</span><span>${priceText(l.price)}</span></li>`).join("");
   $("#summary-lines").innerHTML = linesHTML;
   $("#order-lines").innerHTML = linesHTML;
   ["#preview-total", "#summary-total", "#order-total"].forEach((s) => ($(s).textContent = money(q.total)));
-
-  const none = state.modules.length === 0;
-  $("#btn-continue").disabled = none;
-  $("#continue-hint").hidden = !none;
 }
 
 function set(patch) {
@@ -639,6 +654,7 @@ els.grid.addEventListener("click", (e) => {
 els.grid.addEventListener("change", (e) => {
   if (e.target.name === "color") set({ color: e.target.value });
   if (e.target.name === "start") set({ start: Number(e.target.value) });
+  if (e.target.name === "year") set({ year: Number(e.target.value) });
 });
 $("#engrave").addEventListener("input", (e) => set({ name: e.target.value }));
 
@@ -657,7 +673,7 @@ document.addEventListener("click", (e) => {
   else if (a.dataset.action === "recarga") set({ mode: "recarga" });
   else if (a.dataset.set) {
     const s = byId(CONFIG.sets, a.dataset.set);
-    set({ mode: "agenda", modules: [...s.modules], finishes: [...s.finishes] });
+    set({ mode: "agenda", modules: withIncluded(s.modules), finishes: [...s.finishes] });
   }
   showPanel("steps");
   goBuilder();
@@ -759,8 +775,8 @@ function fillConfigValues() {
   $$('[data-price="base"]').forEach((n) => (n.textContent = money(quote(CONFIG.base).total)));
   $$('[data-price="refill-base"]').forEach((n) => (n.textContent = money(refillBase)));
   $$('[data-price="engrave"]').forEach((n) => (n.textContent = money(CONFIG.cover.engravePrice)));
-  $$("[data-year]").forEach((n) => (n.textContent = CONFIG.year));
-  $$("[data-year-next]").forEach((n) => (n.textContent = CONFIG.year + 1));
+  $$("[data-year]").forEach((n) => (n.textContent = CONFIG.base.year));
+  $$("[data-year-next]").forEach((n) => (n.textContent = CONFIG.base.year + 1));
 }
 
 /* ---------- Hero: a agenda monta-se sozinha; as cores deixam experimentar ---------- */
@@ -768,8 +784,8 @@ function startHero() {
   const frames = [
     { color: "florida", name: "",        modules: ["mensal", "semanal", "notas"] },
     { color: "azulejo", name: "Marta",   modules: ["mensal", "semanal", "notas", "habitos"] },
-    { color: "caqui",   name: "",        modules: ["mensal", "diario", "financas", "notas"] },
-    { color: "salva",   name: "Inês", modules: ["mensal", "semanal", "leituras"] },
+    { color: "caqui",   name: "",        modules: ["mensal", "semanal", "diario", "financas", "notas"] },
+    { color: "salva",   name: "Inês", modules: ["mensal", "semanal", "notas", "leituras"] },
     { color: "cafe",    name: "",        modules: CONFIG.modules.map((m) => m.id) },
   ];
   let view = { ...clone(CONFIG.base), ...frames[0] };

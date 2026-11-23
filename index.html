@@ -52,7 +52,7 @@
           <a class="btn btn--ink" href="#construir">Montar a minha</a>
           <button class="btn btn--line" type="button" data-action="base">Encomendar o modelo base</button>
         </div>
-        <p class="fine">Modelo base: <strong data-price="base">43 €</strong> · capa Florida, mensal, semanal e notas. Preços de exemplo nesta demo.</p>
+        <p class="fine">Modelo base: <strong data-price="base">29,90 €</strong> · capa Florida, mensal, semanal e notas. Preços com IVA incluído.</p>
       </div>
       <div class="hero__stage">
       <div class="hero__art">
@@ -111,7 +111,7 @@
           <div class="preview__info">
             <p class="spec" id="preview-spec">Tinta · A5 · 6 argolas</p>
             <p class="period" id="preview-period">12 meses · Jan 2027 a Dez 2027</p>
-            <p class="total" aria-live="polite" aria-atomic="true"><span>Total</span><strong id="preview-total">43 €</strong></p>
+            <p class="total" aria-live="polite" aria-atomic="true"><span>Total</span><strong id="preview-total">29,90 €</strong></p>
           </div>
         </aside>
 
@@ -127,20 +127,23 @@
               <h3 id="h-cover">Capa</h3>
               <div class="swatches" id="colors" role="radiogroup" aria-label="Cor da capa"></div>
               <div class="field">
-                <label for="engrave">Nome na capa <span class="hint">opcional · máx. 18 caracteres · +<span data-price="engrave">4 €</span></span></label>
+                <label for="engrave">Nome na capa <span class="hint">opcional · máx. 18 caracteres · +<span data-price="engrave">3,00 €</span></span></label>
                 <input id="engrave" type="text" maxlength="18" autocomplete="off" placeholder="Ex.: Marta">
               </div>
             </section>
 
             <section class="step" aria-labelledby="h-start">
               <h3 id="h-start">Começa em</h3>
-              <p class="help">O miolo tem 12 meses e podes começar em qualquer um, não só em janeiro. Ano de início: <span data-year>2027</span>.</p>
+              <p class="help">O miolo tem sempre 12 meses e podes começar em qualquer um, não só em janeiro. Escolher o ano e o mês não muda o preço.</p>
+              <div class="months months--years" id="years" role="radiogroup" aria-label="Ano de início"></div>
               <div class="months" id="months" role="radiogroup" aria-label="Mês de início"></div>
             </section>
 
             <section class="step" aria-labelledby="h-mods">
               <h3 id="h-mods">Módulos</h3>
-              <p class="help">Escolhe quantos quiseres. Cada um aparece como separador na agenda.</p>
+              <p class="help">Cada módulo aparece como separador na agenda. Estes já vêm no preço:</p>
+              <ul class="incl" id="included"></ul>
+              <p class="help">E podes juntar mais:</p>
               <div class="opts" id="modules"></div>
             </section>
 
@@ -159,10 +162,9 @@
           <section class="summary" aria-labelledby="h-sum">
             <h3 id="h-sum">Resumo</h3>
             <ul class="lines" id="summary-lines"></ul>
-            <p class="sum-total"><span>Total</span><strong id="summary-total">43 €</strong></p>
-            <button type="button" class="btn btn--ink btn--block" id="btn-continue" aria-describedby="continue-hint">Continuar para encomenda</button>
-            <p class="hint" id="continue-hint" hidden>Escolhe pelo menos um módulo para continuar.</p>
-            <p class="fine">Preços de exemplo nesta demo.</p>
+            <p class="sum-total"><span>Total</span><strong id="summary-total">29,90 €</strong></p>
+            <button type="button" class="btn btn--ink btn--block" id="btn-continue">Continuar para encomenda</button>
+            <p class="fine">Preços com IVA incluído.</p>
           </section>
         </div>
 
@@ -172,7 +174,7 @@
           <div class="order-sum">
             <p class="order-sum__title">O teu pedido</p>
             <ul class="lines" id="order-lines"></ul>
-            <p class="sum-total"><span>Total</span><strong id="order-total">43 €</strong></p>
+            <p class="sum-total"><span>Total</span><strong id="order-total">29,90 €</strong></p>
           </div>
 
           <form id="order-form" novalidate>
@@ -265,8 +267,8 @@
         <div class="swap" aria-label="Exemplo de recarga">
           <p class="swap__row"><span class="tag tag--old">Miolo <span data-year>2027</span></span><span class="swap__arrow" aria-hidden="true"></span><span class="tag tag--new">Miolo <span data-year-next>2028</span></span></p>
           <p class="swap__cover"><span class="tag tag--cover">A tua capa fica</span></p>
-          <p class="swap__price">Recarga base: <strong data-price="refill-base">19 €</strong> em vez de <strong data-price="base">43 €</strong>.</p>
-          <p class="swap__note">Serve em qualquer capa A5 de 6 argolas. Preços de exemplo nesta demo.</p>
+          <p class="swap__price">Recarga: <strong data-price="refill-base">24,90 €</strong> em vez de <strong data-price="base">29,90 €</strong> com capa nova.</p>
+          <p class="swap__note">Serve em qualquer capa A5 de 6 argolas. Preços com IVA incluído.</p>
         </div>
       </div>
     </section>
@@ -288,7 +290,7 @@
         </details>
         <details>
           <summary>Como é feito o envio?</summary>
-          <p>Enviamos por CTT. Os portes são [PORTES].</p>
+          <p>Enviamos por CTT. Os portes são [PORTES]. Também podemos combinar a entrega em mão: diz-nos nas Notas do pedido.</p>
         </details>
         <details>
           <summary>Posso devolver?</summary>
