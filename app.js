@@ -820,3 +820,17 @@ render();
 startHero();
 // As fontes chegam depois: voltar a medir o nome gravado.
 document.fonts?.ready.then(render);
+
+// Links internos (#secção): fazem scroll sem deixar o "#" no endereço.
+document.addEventListener("click", (e) => {
+  const a = e.target.closest?.('a[href^="#"]');
+  if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
+  const id = decodeURIComponent(a.getAttribute("href").slice(1));
+  const target = id ? document.getElementById(id) : null;
+  if (!target) return;
+  e.preventDefault();
+  target.scrollIntoView({ behavior: reduceMotion() ? "auto" : "smooth" });
+  if (!target.hasAttribute("tabindex")) target.setAttribute("tabindex", "-1");
+  target.focus({ preventScroll: true });
+  if (location.hash) history.replaceState(null, "", location.pathname + location.search);
+});
