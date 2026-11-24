@@ -168,6 +168,8 @@ h2 { font-size: clamp(3rem, 7.4vw, 6rem); }
 .panel { background: var(--paper); border: 1.5px solid var(--ink); border-radius: var(--radius); padding: clamp(20px, 3vw, 36px); display: grid; gap: 28px; }
 .panel__title { font-size: clamp(2.2rem, 4vw, 3.2rem); outline-offset: 6px; }
 .mode { display: grid; grid-template-columns: 1fr 1fr; padding: 4px; background: var(--soft); border-radius: 999px; gap: 4px; }
+.mode--3 { grid-template-columns: repeat(3, 1fr); border-radius: 28px; }
+.mode--3 .mode__btn { padding: 6px 10px; line-height: 1.15; min-height: 52px; }
 .mode__btn { min-height: 48px; border: 0; border-radius: 999px; background: transparent; font-weight: 600; transition: background-color .2s, color .2s; }
 .mode__btn[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
 .mode__btn[aria-pressed="false"]:hover { background: rgba(47, 74, 60, .1); }

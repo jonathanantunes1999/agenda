@@ -8,9 +8,12 @@ const CONFIG = {
   // O ano e o mês de início não mexem no preço: são sempre 12 meses.
   years: [2027, 2028],
   nameMax: 18,
+  // Tipos de agenda (preço base). "includes": os módulos que já vêm no preço (não se escolhem nem se pagam à parte).
+  // A agenda é uma pasta A5 transparente de 6 argolas; a cor e o padrão da capa não têm custo.
   types: {
-    agenda:  { label: "Agenda completa",    price: 29.9 },   // capa dura A5, 6 argolas, mensal, semanal e notas
-    recarga: { label: "Só recarga (miolo)", price: 24.9 },   // mensal, semanal e notas, sem capa
+    agenda:  { label: "Agenda semanal", price: 29.9, includes: ["mensal", "semanal", "notas"] },
+    diaria:  { label: "Agenda diária",  price: 40,   includes: ["mensal", "diario", "notas"] },
+    recarga: { label: "Só recarga (folhas, sem pasta)", price: 24.9, includes: ["mensal", "semanal", "notas"] },
   },
   cover: { engravePrice: 3 },
   months: [
@@ -29,22 +32,22 @@ const CONFIG = {
     { id: "po",      label: "Pó",      hex: "#ABBBC7" },
   ],
   modules: [
-    // "included": já vem no preço da agenda (nos dois tipos), por isso não se escolhe nem se paga à parte.
-    { id: "mensal",   label: "Vista mensal",      tab: "mês", included: true, color: "#3E5F8A", desc: "Um mês em duas páginas, para ver o quadro geral." },
-    { id: "semanal",  label: "Semanal",           tab: "sem", included: true, color: "#C9B99A", desc: "Sete dias por dupla de páginas, com espaço para escrever." },
-    { id: "diario",   label: "Diário",            tab: "dia", price: 49,  color: "#4A3426", desc: "Uma página por dia, com marcações." },
-    { id: "notas",    label: "Notas pontilhadas", tab: "not", included: true, color: "#A9B79C", desc: "Folhas pontilhadas livres para listas, esboços e ideias." },
-    { id: "habitos",  label: "Tracker de hábitos", tab: "háb", price: 2,  color: "#ABBBC7", desc: "Grelha mensal para marcar o que repetes todos os dias." },
-    { id: "financas", label: "Finanças",          tab: "fin", price: 2,  color: "#2F4A3C", desc: "Registo de despesas e orçamento mês a mês." },
-    { id: "leituras", label: "Leituras",          tab: "lei", price: 1.5, color: "#7F6048", desc: "Lista do que lês, com espaço para notas." },
+    // Os quatro primeiros vêm com o tipo de agenda (ver "types"). "extra": módulo opcional, com preço.
+    { id: "mensal",   label: "Vista mensal",      tab: "mês", color: "#3E5F8A", desc: "Um mês em duas páginas, para ver o quadro geral." },
+    { id: "semanal",  label: "Semanal",           tab: "sem", color: "#C9B99A", desc: "Sete dias por dupla de páginas, com espaço para escrever." },
+    { id: "diario",   label: "Diário",            tab: "dia", color: "#4A3426", desc: "Uma página por dia, com marcações." },
+    { id: "notas",    label: "Notas pontilhadas", tab: "not", color: "#A9B79C", desc: "Folhas pontilhadas livres para listas, esboços e ideias." },
+    { id: "habitos",  label: "Tracker de hábitos", tab: "háb", extra: true, price: 2,   color: "#ABBBC7", desc: "Grelha mensal para marcar o que repetes todos os dias." },
+    { id: "financas", label: "Finanças",          tab: "fin", extra: true, price: 2,   color: "#2F4A3C", desc: "Registo de despesas e orçamento mês a mês." },
+    { id: "leituras", label: "Leituras",          tab: "lei", extra: true, price: 1.5, color: "#7F6048", desc: "Lista do que lês, com espaço para notas." },
   ],
   finishes: [
     { id: "separadores", label: "Separadores de cartolina", price: 2, desc: "Um por módulo e por mês." },
-    { id: "caneta",      label: "Suporte de caneta",        price: 2, desc: "Passador na capa para guardares a tua caneta.", coverOnly: true },
+    { id: "caneta",      label: "Suporte de caneta",        price: 2, desc: "Passador na pasta para guardares a tua caneta.", coverOnly: true },
     { id: "bolsa",       label: "Bolsa transparente com fecho", price: 2, desc: "Para guardar papéis soltos e cartões." },
     { id: "stickers",    label: "Folha de stickers",        price: 3, desc: "Chávenas, corações, laços e etiquetas como \"to-do\" e \"compras\"." },
   ],
-  // Conjuntos: só os extras (mensal, semanal e notas já vêm sempre).
+  // Conjuntos (sobre a agenda semanal): só os extras, porque os módulos base já vêm no preço.
   sets: [
     { id: "essencial", label: "Essencial", modules: [], finishes: [] },
     { id: "organizada", label: "Organizada", modules: [], finishes: ["separadores"] },
@@ -61,7 +64,7 @@ const CONFIG = {
   // Pedidos por email via Web3Forms (web3forms.com). Cola aqui a "Access Key" do cliente.
   // Com a chave vazia o envio é só simulado (útil para demos).
   orders: { accessKey: "5d6722e8-49a0-4b9b-988f-6f8cf4d0568d", subject: "Novo pedido bica a bica" },
-  base: { mode: "agenda", color: "florida", name: "", year: 2027, start: 0, modules: ["mensal", "semanal", "notas"], finishes: [], drawings: { capa: null, semanal: null } },
+  base: { mode: "agenda", color: "florida", name: "", year: 2027, start: 0, modules: [], finishes: [], drawings: { capa: null, semanal: null } },
 };
 
 /* ==========================================================================
@@ -71,8 +74,6 @@ const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 const money = (n) => `${n.toLocaleString("pt-PT", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}\u00a0€`;
 const priceText = (n) => (n ? money(n) : "incluído");
-/** Módulos que já vêm no preço da agenda, e a lista de ids com eles sempre presentes. */
-const withIncluded = (ids) => CONFIG.modules.filter((m) => m.included || ids.includes(m.id)).map((m) => m.id);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const reduceMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 const byId = (list, id) => list.find((x) => x.id === id);
@@ -114,12 +115,12 @@ function sanitize(p) {
   if (!p || typeof p !== "object") return d;
   const ids = (list, arr) => (Array.isArray(arr) ? list.filter((x) => arr.includes(x.id)).map((x) => x.id) : []);
   return {
-    mode: p.mode === "recarga" ? "recarga" : "agenda",
+    mode: CONFIG.types[p.mode] ? p.mode : d.mode,
     color: byId(CONFIG.colors, p.color) ? p.color : d.color,
     name: typeof p.name === "string" ? p.name.slice(0, CONFIG.nameMax) : "",
     year: CONFIG.years.includes(p.year) ? p.year : d.year,
     start: Number.isInteger(p.start) && p.start >= 0 && p.start < 12 ? p.start : 0,
-    modules: withIncluded(ids(CONFIG.modules, p.modules)),
+    modules: ids(CONFIG.modules.filter((m) => m.extra), p.modules),
     finishes: ids(CONFIG.finishes, p.finishes),
     drawings: Object.fromEntries(CONFIG.drawings.map((x) => [x.id, cleanDrawing(p.drawings && p.drawings[x.id])])),
   };
@@ -133,16 +134,19 @@ function save() {
 }
 
 const isRefill = (s) => s.mode === "recarga";
+const typeOf = (s) => CONFIG.types[s.mode];
+/** Todos os módulos do pedido: os que o tipo de agenda já inclui + os extras escolhidos. */
+const modulesOf = (s) => CONFIG.modules.filter((m) => typeOf(s).includes.includes(m.id) || s.modules.includes(m.id)).map((m) => m.id);
 
 /**
  * Linhas de preço e total para um estado: tipo de agenda + extras. Os módulos incluídos aparecem a 0 (para a produção).
  * Em recarga não há capa, nome nem suporte de caneta. O total soma-se em cêntimos para evitar erros de arredondamento.
  */
 function quote(s) {
-  const type = CONFIG.types[isRefill(s) ? "recarga" : "agenda"];
+  const type = typeOf(s);
   const lines = [{ label: isRefill(s) ? type.label : `${type.label} · ${byId(CONFIG.colors, s.color).label}`, price: type.price }];
   if (!isRefill(s) && s.name.trim()) lines.push({ label: `Nome gravado: ${s.name.trim()}`, price: CONFIG.cover.engravePrice });
-  CONFIG.modules.filter((m) => s.modules.includes(m.id)).forEach((m) => lines.push({ label: m.label, price: m.included ? 0 : m.price }));
+  CONFIG.modules.filter((m) => modulesOf(s).includes(m.id)).forEach((m) => lines.push({ label: m.label, price: m.extra ? m.price : 0 }));
   CONFIG.finishes
     .filter((f) => s.finishes.includes(f.id) && !(isRefill(s) && f.coverOnly))
     .forEach((f) => lines.push({ label: f.label, price: f.price }));
@@ -152,7 +156,7 @@ function quote(s) {
 
 /* Desenhos: só contam se o sítio onde se aplicam existir (capa fora da recarga; topo só com o módulo escolhido). */
 const drawingOf = (s, id) => (s.drawings && s.drawings[id]) || null;
-const drawingAvailable = (s, d) => (d.needs === "cover" ? !isRefill(s) : s.modules.includes(d.needs));
+const drawingAvailable = (s, d) => (d.needs === "cover" ? !isRefill(s) : modulesOf(s).includes(d.needs));
 const activeDrawings = (s) => CONFIG.drawings.filter((d) => drawingAvailable(s, d) && drawingOf(s, d.id));
 
 function period(s) {
@@ -269,7 +273,7 @@ function createAgenda(host) {
 
       let k = 0;
       CONFIG.modules.forEach((m) => {
-        const on = s.modules.includes(m.id);
+        const on = modulesOf(s).includes(m.id);
         const g = tabEls[m.id];
         g.style.transform = `translate(${on ? 0 : -60}px, ${60 + k * 46}px)`;
         g.style.opacity = on ? 1 : 0;
@@ -294,7 +298,7 @@ function buildOrderText(s, c, links = {}) {
   return [
     `PEDIDO BICA A BICA · ${new Date().toLocaleString("pt-PT")}`,
     "=".repeat(48),
-    refill ? "TIPO:   Só recarga (miolo A5 para 6 argolas, sem capa)" : "TIPO:   Agenda completa (capa dura A5, 6 argolas)",
+    `TIPO:   ${typeOf(s).label}${refill ? " (A5, 6 argolas)" : " (pasta A5 transparente, 6 argolas)"}`,
     ...(refill ? [] : [`CAPA:   ${color.label} (${color.hex})`, `NOME:   ${s.name.trim() || "(sem gravação)"}`]),
     `INÍCIO: ${CONFIG.months[s.start][1]} de ${s.year} (12 meses: ${period(s)})`,
     "",
@@ -311,12 +315,11 @@ function buildOrderText(s, c, links = {}) {
     `  Nome:       ${c.nome}`,
     `  Email:      ${c.email}`,
     `  Telemóvel:  ${c.telemovel}`,
-    `  Morada:     ${c.morada}`,
-    `  Cód. postal: ${c.codpostal}  ${c.localidade}`,
+    `  Entrega:    ${c.entrega || "(a combinar com a cliente)"}`,
     `  Notas:      ${c.notas || "-"}`,
     "",
     "ACEITES pela cliente: Termos e condições, Política de privacidade e ausência de livre resolução (14 dias) em produtos personalizados.",
-    "PAGAMENTO: MB Way ou transferência. Enviar dados por email; iniciar produção só quando o pagamento entrar.",
+    "PAGAMENTO: MB Way ou numerário. Entrega em mão. Contactar a cliente para combinar o pagamento e a entrega.",
   ].join("\n");
 }
 
@@ -559,18 +562,15 @@ function buildControls() {
       <span class="opt__text"><span class="opt__name">${x.label}</span><span class="opt__desc">${x.desc}</span></span>
       <span class="opt__price">+${money(x.price)}</span>
     </button>`;
-  // Os módulos incluídos mostram-se à parte (já vêm no preço); só os extras se escolhem.
-  $("#included").innerHTML = CONFIG.modules.filter((m) => m.included).map((m) =>
-    `<li class="incl__item"><span class="set__tab" style="--tab:${m.color}" aria-hidden="true"></span><span><strong>${m.label}</strong> <span class="opt__desc">${m.desc}</span></span></li>`).join("");
-  $("#modules").innerHTML = CONFIG.modules.filter((m) => !m.included).map((m) => opt("module", m)).join("");
+  $("#modules").innerHTML = CONFIG.modules.filter((m) => m.extra).map((m) => opt("module", m)).join("");
   $("#finishes").innerHTML = CONFIG.finishes.map((f) => opt("finish", f)).join("");
   $("#engrave").maxLength = CONFIG.nameMax;
 
   $("#sets").innerHTML = CONFIG.sets.map((set) => {
-    const ids = withIncluded(set.modules);
-    const mods = CONFIG.modules.filter((m) => ids.includes(m.id));
+    const setState = { ...clone(CONFIG.base), modules: set.modules, finishes: set.finishes };
+    const mods = CONFIG.modules.filter((m) => modulesOf(setState).includes(m.id));
     const fins = CONFIG.finishes.filter((f) => set.finishes.includes(f.id));
-    const total = quote({ ...clone(CONFIG.base), modules: ids, finishes: set.finishes }).total;
+    const total = quote(setState).total;
     return `
       <article class="set sheet">
         <h3>${set.label}</h3>
@@ -578,10 +578,17 @@ function buildControls() {
           ${mods.map((m) => `<li><span class="set__tab" style="--tab:${m.color}" aria-hidden="true"></span>${m.label}</li>`).join("")}
           ${fins.map((f) => `<li><span class="set__tab set__tab--fin" aria-hidden="true"></span>${f.label}</li>`).join("")}
         </ul>
-        <p class="set__price"><strong>${money(total)}</strong><span>com capa dura</span></p>
+        <p class="set__price"><strong>${money(total)}</strong><span>com pasta</span></p>
         <button type="button" class="btn btn--ink btn--block" data-set="${set.id}" aria-label="Escolher o conjunto ${set.label}">Escolher</button>
       </article>`;
   }).join("");
+}
+
+/** Lista dos módulos que já vêm no preço, conforme o tipo de agenda escolhido. */
+function renderIncluded() {
+  const inc = typeOf(state).includes;
+  $("#included").innerHTML = CONFIG.modules.filter((m) => inc.includes(m.id)).map((m) =>
+    `<li class="incl__item"><span class="set__tab" style="--tab:${m.color}" aria-hidden="true"></span><span><strong>${m.label}</strong> <span class="opt__desc">${m.desc}</span></span></li>`).join("");
 }
 
 function render() {
@@ -602,6 +609,7 @@ function render() {
     b.hidden = Boolean(refill && b.dataset.kind === "finish" && f.coverOnly);
   });
 
+  renderIncluded();
   renderDraws();
   previewAgenda.update(state);
   $("#preview-spec").textContent = `${refill ? "Recarga" : color.label} · A5 · 6 argolas`;
@@ -673,7 +681,7 @@ document.addEventListener("click", (e) => {
   else if (a.dataset.action === "recarga") set({ mode: "recarga" });
   else if (a.dataset.set) {
     const s = byId(CONFIG.sets, a.dataset.set);
-    set({ mode: "agenda", modules: withIncluded(s.modules), finishes: [...s.finishes] });
+    set({ mode: "agenda", modules: [...s.modules], finishes: [...s.finishes] });
   }
   showPanel("steps");
   goBuilder();
@@ -697,9 +705,6 @@ const FIELDS = {
     ok: (v) => /^[29]\d{8}$/.test(v.replace(/[\s.-]/g, "").replace(/^(\+|00)?351/, "")),
     bad: "Indica um telemóvel com 9 dígitos, por exemplo 912 345 678.",
   },
-  morada: { empty: "Indica a morada (rua e número)." },
-  codpostal: { empty: "Indica o código postal.", ok: (v) => /^\d{4}-\d{3}$/.test(v), bad: "Usa o formato 0000-000." },
-  localidade: { empty: "Indica a localidade." },
   aceito: { empty: "Para enviares o pedido tens de aceitar os termos e condições." },
 };
 
@@ -782,11 +787,11 @@ function fillConfigValues() {
 /* ---------- Hero: a agenda monta-se sozinha; as cores deixam experimentar ---------- */
 function startHero() {
   const frames = [
-    { color: "florida", name: "",        modules: ["mensal", "semanal", "notas"] },
-    { color: "azulejo", name: "Marta",   modules: ["mensal", "semanal", "notas", "habitos"] },
-    { color: "caqui",   name: "",        modules: ["mensal", "semanal", "diario", "financas", "notas"] },
-    { color: "salva",   name: "Inês", modules: ["mensal", "semanal", "notas", "leituras"] },
-    { color: "cafe",    name: "",        modules: CONFIG.modules.map((m) => m.id) },
+    { mode: "agenda", color: "florida", name: "",      modules: [] },
+    { mode: "agenda", color: "azulejo", name: "Marta", modules: ["habitos"] },
+    { mode: "diaria", color: "caqui",   name: "",      modules: ["financas"] },
+    { mode: "agenda", color: "salva",   name: "Inês",  modules: ["leituras"] },
+    { mode: "agenda", color: "cafe",    name: "",      modules: ["habitos", "financas", "leituras"] },
   ];
   let view = { ...clone(CONFIG.base), ...frames[0] };
   const box = $("#hero-swatches");

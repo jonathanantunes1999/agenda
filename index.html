@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>bica a bica — agendas que se montam, dia a dia</title>
-  <meta name="description" content="bica a bica: agendas A5 de capa dura com 6 argolas. Escolhes a capa, juntas os módulos e, para o ano, trocas só o miolo.">
+  <meta name="description" content="bica a bica: agendas A5 numa pasta transparente de 6 argolas. Escolhes a cor, juntas os módulos e, para o ano, trocas só as folhas.">
   <meta name="theme-color" content="#F4EDE1">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -44,9 +44,9 @@
     <!-- 2. HERO -->
     <section class="hero wrap" id="top">
       <div class="hero__copy">
-        <p class="kicker">Agenda A5 · capa dura · 6 argolas</p>
+        <p class="kicker">Agenda A5 · pasta transparente · 6 argolas</p>
         <h1>A agenda que tu <mark>montas</mark>.</h1>
-        <p class="lead">Agendas feitas à tua medida: capa dura A5, seis argolas e um miolo que trocas todos os anos. Escolhes a cor e o que leva dentro.</p>
+        <p class="lead">Agendas feitas à tua medida: pasta A5 transparente com seis argolas e folhas que trocas todos os anos. Escolhes a cor e o que leva dentro.</p>
         <p class="tagline">Organiza os teus dias, com um toque de café <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#heart"/></svg></p>
         <div class="cta-row">
           <a class="btn btn--ink" href="#construir">Montar a minha</a>
@@ -92,9 +92,9 @@
         <h2>Escolhe. Junta. <em>Recebe.</em></h2>
       </div>
       <ol class="steps">
-        <li class="sheet"><span class="num">01</span><h3>Escolhe a capa</h3><p>Seis cores de capa dura A5 e, se quiseres, o teu nome gravado em baixo.</p></li>
+        <li class="sheet"><span class="num">01</span><h3>Escolhe a capa</h3><p>Escolhe a cor e o padrão da capa e, se quiseres, o teu nome por baixo.</p></li>
         <li class="sheet"><span class="num">02</span><h3>Junta os módulos</h3><p>Mensal, semanal, diário, notas, hábitos, finanças, leituras. Levas só o que vais usar.</p></li>
-        <li class="sheet"><span class="num">03</span><h3>Recebe montada</h3><p>Montamos tudo nas argolas e enviamos por CTT. Pagas por MB Way ou transferência depois do pedido.</p></li>
+        <li class="sheet"><span class="num">03</span><h3>Recebe montada</h3><p>Montamos tudo nas argolas e entregamos-te em mão. Pagas por MB Way ou em numerário.</p></li>
       </ol>
     </section>
 
@@ -117,8 +117,9 @@
 
         <!-- Passos -->
         <div class="panel" id="panel-steps">
-          <div class="mode" role="group" aria-label="Tipo de pedido">
-            <button type="button" class="mode__btn" data-mode="agenda" aria-pressed="true">Agenda completa</button>
+          <div class="mode mode--3" role="group" aria-label="Tipo de pedido">
+            <button type="button" class="mode__btn" data-mode="agenda" aria-pressed="true">Agenda semanal</button>
+            <button type="button" class="mode__btn" data-mode="diaria" aria-pressed="false">Agenda diária</button>
             <button type="button" class="mode__btn" data-mode="recarga" aria-pressed="false">Só recarga</button>
           </div>
 
@@ -197,19 +198,8 @@
                 <p class="err" id="e-telemovel"></p>
               </div>
               <div class="field">
-                <label for="f-codpostal">Código postal</label>
-                <input id="f-codpostal" name="codpostal" type="text" autocomplete="postal-code" inputmode="numeric" placeholder="0000-000" aria-describedby="e-codpostal" required>
-                <p class="err" id="e-codpostal"></p>
-              </div>
-              <div class="field field--wide">
-                <label for="f-morada">Morada</label>
-                <input id="f-morada" name="morada" type="text" autocomplete="street-address" aria-describedby="e-morada" required>
-                <p class="err" id="e-morada"></p>
-              </div>
-              <div class="field field--wide">
-                <label for="f-localidade">Localidade</label>
-                <input id="f-localidade" name="localidade" type="text" autocomplete="address-level2" aria-describedby="e-localidade" required>
-                <p class="err" id="e-localidade"></p>
+                <label for="f-entrega">Onde recebes? <span class="hint">opcional</span></label>
+                <input id="f-entrega" name="entrega" type="text" autocomplete="off" placeholder="Zona ou ponto de encontro">
               </div>
               <div class="field field--wide">
                 <label for="f-notas">Notas <span class="hint">opcional</span></label>
@@ -233,7 +223,7 @@
 
         <!-- Confirmação -->
         <div class="panel" id="panel-done" hidden>
-          <h3 class="panel__title" id="h-done" tabindex="-1">Pedido recebido. Enviamos os dados de pagamento por email.</h3>
+          <h3 class="panel__title" id="h-done" tabindex="-1">Pedido recebido. Falamos contigo em breve para combinar o pagamento e a entrega.</h3>
           <p class="help">Assim é que o pedido chega à bica a bica, já em texto pronto para produção:</p>
           <pre class="order-text" id="order-text" tabindex="0" aria-label="Texto do pedido"></pre>
           <div id="done-draws" hidden>
@@ -261,14 +251,14 @@
         <div>
           <p class="kicker">Recargas</p>
           <h2>Para o ano, trocas <em>só o miolo</em>.</h2>
-          <p class="lead">As argolas abrem. No fim do ano tiras o miolo usado, pões o novo e a capa dura continua contigo, anos a fio.</p>
+          <p class="lead">As argolas abrem. No fim do ano tiras o miolo usado, pões o novo e a pasta continua contigo, anos a fio.</p>
           <button type="button" class="btn btn--accent" data-action="recarga">Montar recarga</button>
         </div>
         <div class="swap" aria-label="Exemplo de recarga">
           <p class="swap__row"><span class="tag tag--old">Miolo <span data-year>2027</span></span><span class="swap__arrow" aria-hidden="true"></span><span class="tag tag--new">Miolo <span data-year-next>2028</span></span></p>
-          <p class="swap__cover"><span class="tag tag--cover">A tua capa fica</span></p>
-          <p class="swap__price">Recarga: <strong data-price="refill-base">24,90 €</strong> em vez de <strong data-price="base">29,90 €</strong> com capa nova.</p>
-          <p class="swap__note">Serve em qualquer capa A5 de 6 argolas. Preços com IVA incluído.</p>
+          <p class="swap__cover"><span class="tag tag--cover">A tua pasta fica</span></p>
+          <p class="swap__price">Recarga: <strong data-price="refill-base">24,90 €</strong> em vez de <strong data-price="base">29,90 €</strong> com pasta nova.</p>
+          <p class="swap__note">Serve em qualquer pasta A5 de 6 argolas. Preços com IVA incluído.</p>
         </div>
       </div>
     </section>
@@ -282,23 +272,23 @@
       <div class="faq">
         <details>
           <summary>Quanto tempo demora a produção?</summary>
-          <p>O prazo de produção é de [PRAZO], contado a partir do momento em que o pagamento entra.</p>
+          <p>O prazo de produção é de [PRAZO], contado a partir do momento em que combinamos o pagamento contigo.</p>
         </details>
         <details>
           <summary>Como pago?</summary>
-          <p>Por MB Way ou transferência bancária, depois de fazeres o pedido. Enviamos os dados por email e a produção começa quando o pagamento entra.</p>
+          <p>Por MB Way ou em numerário. Depois do pedido contactamos-te para combinar como e quando pagas.</p>
         </details>
         <details>
-          <summary>Como é feito o envio?</summary>
-          <p>Enviamos por CTT. Os portes são [PORTES]. Também podemos combinar a entrega em mão: diz-nos nas Notas do pedido.</p>
+          <summary>Como recebo a agenda?</summary>
+          <p>A entrega é feita em mão. Contactamos-te para combinar o local e a hora que te dê mais jeito.</p>
         </details>
         <details>
           <summary>Posso devolver?</summary>
           <p>Os produtos personalizados não têm direito de livre resolução de 14 dias. Se vier com defeito, fazemos a troca.</p>
         </details>
         <details>
-          <summary>As recargas servem na minha capa?</summary>
-          <p>Servem em qualquer capa A5 de 6 argolas, seja nossa ou não.</p>
+          <summary>As recargas servem na minha pasta?</summary>
+          <p>Servem em qualquer pasta A5 de 6 argolas, seja nossa ou não.</p>
         </details>
       </div>
     </section>
