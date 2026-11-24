@@ -464,7 +464,8 @@ dialog::backdrop { background: rgba(47, 74, 60, .6); }
 }
 
 /* Novidade sazonal (recargas de Natal) */
-.xmas { margin-top: clamp(40px, 6vw, 72px); padding: clamp(24px, 4vw, 40px); border: 2px dashed var(--accent); border-radius: 24px; background: rgba(244, 237, 225, .06); display: grid; gap: 14px; justify-items: start; }
+.xmas-wrap { --focus: #fff; margin-block: clamp(24px, 5vw, 56px); }
+.xmas { color: var(--paper); padding: clamp(24px, 4vw, 40px); border: 2px dashed var(--accent); outline: 6px solid var(--ink); outline-offset: -2px; border-radius: 24px; background: var(--ink); display: grid; gap: 14px; justify-items: start; }
 .xmas .kicker::before { border-color: var(--accent); }
 .xmas h3 { margin: 0; font: 700 clamp(2.4rem, 6vw, 4rem)/1 var(--font-display); color: var(--paper); }
 .xmas h3 em { font-style: normal; color: var(--accent); }
@@ -472,3 +473,15 @@ dialog::backdrop { background: rgba(47, 74, 60, .6); }
 .xmas__list li::marker { color: var(--accent); }
 .xmas__buy { margin: 4px 0 8px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
 .xmas__price { background: var(--accent); color: var(--ink); font: 700 1.9rem/1 var(--font-display); padding: 8px 20px; border-radius: 999px; }
+.promo { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 4px 12px; min-height: 40px; padding: 6px 16px; background: var(--accent); color: var(--ink); text-align: center; text-decoration: none; font-size: .95rem; }
+.promo:hover { background: var(--sky); color: var(--ink); }
+.promo strong { text-transform: uppercase; letter-spacing: .12em; font-size: .78rem; }
+.promo__go { font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+@media (min-width: 800px) {
+  .xmas { grid-template-columns: 1.3fr .7fr; column-gap: 48px; align-items: center; }
+  .xmas > .kicker, .xmas > h3, .xmas > .xmas__list { grid-column: 1; }
+  .xmas > .xmas__buy, .xmas > .btn { grid-column: 2; justify-self: center; }
+  .xmas > .xmas__buy { grid-row: 1 / span 3; align-self: center; flex-direction: column; text-align: center; margin: 0; }
+  .xmas > .btn { grid-row: 4; }
+  .xmas__price { font-size: 3.6rem; padding: 14px 34px; }
+}
