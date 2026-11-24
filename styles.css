@@ -462,3 +462,13 @@ dialog::backdrop { background: rgba(47, 74, 60, .6); }
   .marquee ul { flex-wrap: wrap; justify-content: center; row-gap: 8px; }
   .marquee ul[aria-hidden="true"] { display: none; }
 }
+
+/* Novidade sazonal (recargas de Natal) */
+.xmas { margin-top: clamp(40px, 6vw, 72px); padding: clamp(24px, 4vw, 40px); border: 2px dashed var(--accent); border-radius: 24px; background: rgba(244, 237, 225, .06); display: grid; gap: 14px; justify-items: start; }
+.xmas .kicker::before { border-color: var(--accent); }
+.xmas h3 { margin: 0; font: 700 clamp(2.4rem, 6vw, 4rem)/1 var(--font-display); color: var(--paper); }
+.xmas h3 em { font-style: normal; color: var(--accent); }
+.xmas__list { margin: 0; padding-left: 1.2em; list-style: disc; display: grid; gap: 6px; font-size: 1.05rem; }
+.xmas__list li::marker { color: var(--accent); }
+.xmas__buy { margin: 4px 0 8px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+.xmas__price { background: var(--accent); color: var(--ink); font: 700 1.9rem/1 var(--font-display); padding: 8px 20px; border-radius: 999px; }
